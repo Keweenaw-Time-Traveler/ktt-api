@@ -32,36 +32,51 @@ I'd consider this a beta as I just got it working and it's not automated how I'd
 {
   "active": [
     {
-      "id": "1",
-      "type": "People",
-      "centroid": { "lon": "-9844863.6469", "lat": "5982639.7919" },
-      "percent": 0.2
+      "id": "DJ-76",
+      "type": "story",
+      "centroid": {
+          "lon": "-9859262.74853515",
+          "lat": "5961983.47161866"
+      },
+      "percent": "0.01"
     },
     {
-      "id": "2",
-      "type": "People",
-      "centroid": { "lon": "-9844863.6469", "lat": "5982639.7919" },
-      "percent": 0.1
+      "id": "DK-76",
+      "type": "story",
+      "centroid": {
+          "lon": "-9857181.8527832",
+          "lat": "5960782.06597902"
+      },
+      "percent": "0.50"
     }
   ],
-  "in-active": [
+  "inactive": [
     {
-      "id": "3",
-      "type": "People",
-      "centroid": { "lon": "-9844863.6469", "lat": "5982639.7919" },
-      "percent": 0.4
+      "id": "BV-93",
+      "type": "story",
+      "centroid": {
+          "lon": "-9942498.57754516",
+          "lat": "5921135.67761231"
+      },
+      "percent": "0.60"
     },
     {
-      "id": "4",
-      "type": "Everything",
-      "centroid": { "lon": "-9844863.6469", "lat": "5982639.7919" },
-      "percent": 0.1
+      "id": "CF-85",
+      "type": "story",
+      "centroid": {
+          "lon": "-9921689.62030029",
+          "lat": "5940358.16882324"
+      },
+      "percent": "1.00"
     },
     {
-      "id": "5",
-      "type": "Everything",
-      "centroid": { "lon": "-9844863.6469", "lat": "5982639.7919" },
-      "percent": 0.2
+      "id": "CQ-117",
+      "type": "person",
+      "centroid": {
+          "lon": "-9898799.76733398",
+          "lat": "5862266.79797365"
+      },
+      "percent": "0.00"
     }
   ]
 }
