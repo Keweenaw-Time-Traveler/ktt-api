@@ -155,7 +155,7 @@ Used to generate markers based on visible area
 **Request Body Arguments**
 
 - `"search": string` what the user entered in the search field
-- `"area": object` geometry of the area being viewed
+- `"bbox": object` https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#extent
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
@@ -253,9 +253,10 @@ Get info needed for marker popup
 
 **Request Body Arguments**
 
-- `"id": string`
+- `"recnumber": string`
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
+  - `"type": string`
 
 **Response**
 
@@ -269,14 +270,16 @@ Get info needed for marker popup
       "recnumber": "74917173CENSUS1920",
       "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school",
       "photos": false,
-      "featured": false
+      "featured": false,
+      "highlighted": true
     },
     {
       "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
       "recnumber": "74917173CENSUS1920",
       "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school",
       "photos": true,
-      "featured": false
+      "featured": false,
+      "highlighted": false
     }
   ]
 }
