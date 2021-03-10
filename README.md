@@ -156,6 +156,11 @@ Used to generate markers based on visible area
 
 - `"search": string` what the user entered in the search field
 - `"bbox": object` https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#extent
+  - `xmin: number`
+  - `ymin: number`
+  - `xmax: number`
+  - `ymax: number`
+  - `spatialReference: wkid`
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
