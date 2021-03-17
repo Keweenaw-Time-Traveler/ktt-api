@@ -30,55 +30,61 @@ I'd consider this a beta as I just got it working and it's not automated how I'd
 
 ```json
 {
-  "active": [
-    {
-      "id": "DJ-76",
-      "type": "story",
-      "centroid": {
-          "lon": "-9859262.74853515",
-          "lat": "5961983.47161866"
-      },
-      "percent": "0.01"
-    },
-    {
-      "id": "DK-76",
-      "type": "story",
-      "centroid": {
-          "lon": "-9857181.8527832",
-          "lat": "5960782.06597902"
-      },
-      "percent": "0.50"
+  "active": {
+       "length":2,
+       "results": [
+            {
+              "id": "DJ-76",
+              "type": "story",
+              "centroid": {
+                  "lon": "-9859262.74853515",
+                  "lat": "5961983.47161866"
+              },
+              "percent": "0.01"
+            },
+            {
+              "id": "DK-76",
+              "type": "story",
+              "centroid": {
+                  "lon": "-9857181.8527832",
+                  "lat": "5960782.06597902"
+              },
+              "percent": "0.50"
+            }
+        ]
+  },
+  "inactive": {
+      "length":3,
+      "results":  [
+          {
+              "id": "BV-93",
+              "type": "story",
+              "centroid": {
+                  "lon": "-9942498.57754516",
+                  "lat": "5921135.67761231"
+              },
+              "percent": "0.60"
+            },
+            {
+              "id": "CF-85",
+              "type": "story",
+              "centroid": {
+                  "lon": "-9921689.62030029",
+                  "lat": "5940358.16882324"
+              },
+              "percent": "1.00"
+            },
+            {
+              "id": "CQ-117",
+              "type": "person",
+              "centroid": {
+                  "lon": "-9898799.76733398",
+                  "lat": "5862266.79797365"
+              },
+              "percent": "0.00"
+          }
+       ]
     }
-  ],
-  "inactive": [
-    {
-      "id": "BV-93",
-      "type": "story",
-      "centroid": {
-          "lon": "-9942498.57754516",
-          "lat": "5921135.67761231"
-      },
-      "percent": "0.60"
-    },
-    {
-      "id": "CF-85",
-      "type": "story",
-      "centroid": {
-          "lon": "-9921689.62030029",
-          "lat": "5940358.16882324"
-      },
-      "percent": "1.00"
-    },
-    {
-      "id": "CQ-117",
-      "type": "person",
-      "centroid": {
-          "lon": "-9898799.76733398",
-          "lat": "5862266.79797365"
-      },
-      "percent": "0.00"
-    }
-  ]
 }
 ```
 
