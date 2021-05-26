@@ -130,7 +130,7 @@ What goes in the popup when you click on a grid cell. Records in the grid cell t
 
 ### Markers
 
-Used to generate markers based on visible area. Active and inactive. Each marker actually represents a collection of records coincident at that location. 
+Used to generate markers based on visible area. Active and inactive; results for every marker location. Each marker actually represents a collection of records coincident at that location. 
 
 **Definition**
 
@@ -159,77 +159,51 @@ Used to generate markers based on visible area. Active and inactive. Each marker
 ```json
 {
   "active": {
-    "length": 3,
-    "people": {
-      "length": 1,
-      "results": [
+    "length": 2,
+    "results": [
         {
-          "id": "2D5AD5AE-880C-41BC-BDEE-FF07E5C7DA81",
-          "recnumber": "74917173CENSUS1920",
-          "lon": "-9844863.6469",
-          "lat": "5982639.7919"
-        }
+                "id": "-9845873|5981915",
+                "type": "person",
+                "x": "-9845873",
+                "y": "5981915",
+                "count": "1"
+        },
+        {
+                "id": "-9846844.4305|5982883.272",
+                "type": "person",
+                "x": "-9846844.4305",
+                "y": "5982883.272",
+                "count": "2"
+         }
       ]
     },
-    "places": {
-      "length": 1,
-      "results": [
-        {
-          "id": "2D5AD5AE-880C-41BC-BDEE-FF07E5C7DA81",
-          "recnumber": "74917173CENSUS1920",
-          "lon": "-9844863.6469",
-          "lat": "5982639.7919"
-        }
-      ]
-    },
-    "stories": {
-      "length": 1,
-      "results": [
-        {
-          "id": "2D5AD5AE-880C-41BC-BDEE-FF07E5C7DA81",
-          "recnumber": "74917173CENSUS1920",
-          "lon": "-9844863.6469",
-          "lat": "5982639.7919"
-        }
-      ]
+  "inactive": {
+     "length": 96003,
+     "results": [
+           {
+                "id": "-9780518.9565779|6019850.74715956",
+                "type": "story",
+                "x": "-9780518.9565779",
+                "y": "6019850.74715956",
+                "count": "1"
+           },
+           {
+                "id": "-9782729.72299697|6016928.4476213",
+                "type": "story",
+                "x": "-9782729.72299697",
+                "y": "6016928.4476213",
+                "count": "1"
+           }, 
+           ...
+           {
+                "id": "-9791721.368|5997838.6167",
+                "type": "person",
+                "x": "-9791721.368",
+                "y": "5997838.6167",
+                "count": "95"
+            }
+         ]
     }
-  },
-  "in_active": {
-    "length": 3,
-    "people": {
-      "length": 1,
-      "results": [
-        {
-          "id": "2D5AD5AE-880C-41BC-BDEE-FF07E5C7DA81",
-          "recnumber": "74917173CENSUS1920",
-          "lon": "-9844863.6469",
-          "lat": "5982639.7919"
-        }
-      ]
-    },
-    "places": {
-      "length": 1,
-      "results": [
-        {
-          "id": "2D5AD5AE-880C-41BC-BDEE-FF07E5C7DA81",
-          "recnumber": "74917173CENSUS1920",
-          "lon": "-9844863.6469",
-          "lat": "5982639.7919"
-        }
-      ]
-    },
-    "stories": {
-      "length": 1,
-      "results": [
-        {
-          "id": "2D5AD5AE-880C-41BC-BDEE-FF07E5C7DA81",
-          "recnumber": "74917173CENSUS1920",
-          "lon": "-9844863.6469",
-          "lat": "5982639.7919"
-        }
-      ]
-    }
-  }
 }
 ```
 
