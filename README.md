@@ -88,8 +88,7 @@ The items being counted are people, buildings, stories, and places from the live
 
 ### The Grid Cell
 
-What goes in the popup when you click on a grid cell
-`Question:` Do we make 1 request for all types or seperate each request?
+What goes in the popup when you click on a grid cell. Records in the grid cell that match the search text and filters. 
 
 **Definition**
 
@@ -97,9 +96,8 @@ What goes in the popup when you click on a grid cell
 
 **Request Body Arguments**
 
+- `"search": string` what the user entered in the search field
 - `"id": string` grid id
-- `"centroid": object` give lon lat of cell centroid
-- `"size": number` cell size in km
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
