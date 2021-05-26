@@ -79,49 +79,51 @@ What goes in the popup when you click on a grid cell. Records in the grid cell t
 
 ```json
 {
-    "length": 6,
-    "size": "10",
-    "people": {
-         "length":2,
-         "results": [
-              {
-                "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-                "recnumber": "74917173CENSUS1920",
-                "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school"
+  "active": {
+          "length": 6,
+          "size": "10",
+          "people": {
+               "length":2,
+               "results": [
+                    {
+                      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                      "recnumber": "74917173CENSUS1920",
+                      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school"
+                    },
+                    {
+                      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                      "recnumber": "74917173CENSUS1920",
+                      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, home"
+                    },
+                    {
+                      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                      "recnumber": "74917173CENSUS1920",
+                      "title": "GLADIS JOHNSON, 9, 1920"
+                    }
+                 ],
               },
-              {
-                "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-                "recnumber": "74917173CENSUS1920",
-                "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, home"
+              "places": {
+                 "length": 0,
+                 "results": [
+                       {
+                         "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                         "title": "JOHNSON HOCKEY ARENA"
+                       },
+                       {
+                         "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                         "title": "JOHNSON MINING COMPANY"
+                       }
+                 ],
               },
-              {
-                "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-                "recnumber": "74917173CENSUS1920",
-                "title": "GLADIS JOHNSON, 9, 1920"
-              }
-           ],
-        },
-        "places": {
-           "length": 0,
-           "results": [
-                 {
-                   "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-                   "title": "JOHNSON HOCKEY ARENA"
-                 },
-                 {
-                   "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-                   "title": "JOHNSON MINING COMPANY"
-                 }
-            ],
-        }
-        "stories": {
-           "length": 0,
-           "results": [
-                  {
-                    "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-                    "title": "GLADIS JOHNSON was amazing!"
-                  }
-              ],
+              "stories": {
+                 "length": 0,
+                 "results": [
+                        {
+                          "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                          "title": "GLADIS JOHNSON was amazing!"
+                        }
+                 ],
+            }
       }
 }
 ```
