@@ -3,11 +3,9 @@ In progress google sheet of columns in each table in the database. Currently inc
 
 ### Grid
 
-5k hexagonal grid made over a large chunk of the Western UP
+10km, 1km, 100m rectangular grid based on the MGRS over a large chunk of the Western UP
 Right now with about 7,000 points and 4,000 grid cells
-It's static and maybe a little slow, but much faster than a live query doing all this joining.
-The items being counted are people from the JSON services I sent last month, plus buildings, stories, and places from the live Kett explorer app.
-I'd consider this a beta as I just got it working and it's not automated how I'd like, but it should work.
+The items being counted are people, buildings, stories, and places from the live Kett explorer app.
 
 **Definition**
 
