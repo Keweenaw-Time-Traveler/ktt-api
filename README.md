@@ -194,7 +194,7 @@ Used to generate markers based on visible area. Active and inactive; results for
                 "y": "6016928.4476213",
                 "count": "1"
            }, 
-           ...
+           ...,
            {
                 "id": "-9791721.368|5997838.6167",
                 "type": "person",
@@ -209,7 +209,10 @@ Used to generate markers based on visible area. Active and inactive; results for
 
 ### Marker Info
 
-Get info needed for marker popup
+Get info needed for marker popup; A selected record from the search results list will be highlighted in this list of all records coincident at this marker location.  
+When search string and/or filters are passed, active items in marker info results will be those that match this string. Inactive items will be those that don't match these.
+ID is required. This is passed from the marker that the user clicks on. All results are for a single marker location. 
+Recnumber is passed when a record is clicked from the search list at left. List items in this marker info list that match this record are highlighted. 
 
 **Definition**
 
@@ -217,9 +220,13 @@ Get info needed for marker popup
 
 **Request Body Arguments**
 
+- `"search": string` what the user entered in the search field
+- `"id": string` Marker ID (pipe delimited concatenation of marker lon|lat)
 - `"recnumber": string`
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
+  - `"photos": boolean` should list include results with photos
+  - `"featured": boolean` should list include results that are featured
   - `"type": string`
 
 **Response**
@@ -228,24 +235,47 @@ Get info needed for marker popup
 
 ```json
 {
-  "people": [
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "recnumber": "74917173CENSUS1920",
-      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school",
-      "photos": false,
-      "featured": false,
-      "highlighted": true
-    },
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "recnumber": "74917173CENSUS1920",
-      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school",
-      "photos": true,
-      "featured": false,
-      "highlighted": false
+    "active": {
+        "length": 40,
+        "people": {
+            "length": 40,
+            "results": [
+                {
+                    "id": "7FDC589E-79D0-4F42-806A-14027F6A3936",
+                    "recnumber": "74954582CENSUS1920",
+                    "title": "FRANCIS N MILLER, 14, SINGLE",
+                    "photos": "false",
+                    "featured": "false",
+                    "highlighted": "true"
+                },
+                {
+                    "id": "DB8C38C6-1A10-44D3-AB1E-65AA9A8FE0A6",
+                    "recnumber": "74954548CENSUS1920",
+                    "title": "THOMAS MILLS, HEAD FEEDER, 60, WIDOW",
+                    "photos": "false",
+                    "featured": "false",
+                    "highlighted": "false"
+                }, 
+                ...,
+                {
+                    "id": "463A84FE-74B2-4CD3-8B96-5E4F9A0B4791",
+                    "recnumber": "74955631CENSUS1920",
+                    "title": "ROBERT MILLER, 5, SINGLE",
+                    "photos": "false",
+                    "featured": "false",
+                    "highlighted": "false"
+                }
+            ]
+        },
+        "places": {
+            "length": 0,
+            "results": []
+        },
+        "stories": {
+            "length": 0,
+            "results": []
+        }
     }
-  ]
 }
 ```
 
