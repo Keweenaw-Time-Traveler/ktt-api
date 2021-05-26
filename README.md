@@ -15,7 +15,7 @@ The items being counted are people, buildings, stories, and places from the live
 **Request Body Arguments**
 
 - `"search": string` what the user entered in the search field
-- `"size": number` grid size in km
+- `"size": number` grid size in km (10,1,01)
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
@@ -30,6 +30,7 @@ The items being counted are people, buildings, stories, and places from the live
 {
   "active": {
        "length":2,
+       "size":"10",
        "results": [
             {
               "id": "DJ-76",
@@ -50,39 +51,7 @@ The items being counted are people, buildings, stories, and places from the live
               "percent": "0.50"
             }
         ]
-  },
-  "inactive": {
-      "length":3,
-      "results":  [
-          {
-              "id": "BV-93",
-              "type": "story",
-              "centroid": {
-                  "lon": "-9942498.57754516",
-                  "lat": "5921135.67761231"
-              },
-              "percent": "0.60"
-            },
-            {
-              "id": "CF-85",
-              "type": "story",
-              "centroid": {
-                  "lon": "-9921689.62030029",
-                  "lat": "5940358.16882324"
-              },
-              "percent": "1.00"
-            },
-            {
-              "id": "CQ-117",
-              "type": "person",
-              "centroid": {
-                  "lon": "-9898799.76733398",
-                  "lat": "5862266.79797365"
-              },
-              "percent": "0.00"
-          }
-       ]
-    }
+  }
 }
 ```
 
@@ -110,45 +79,56 @@ What goes in the popup when you click on a grid cell. Records in the grid cell t
 
 ```json
 {
-  "people": [
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "recnumber": "74917173CENSUS1920",
-      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school"
-    },
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "recnumber": "74917173CENSUS1920",
-      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, home"
-    },
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "recnumber": "74917173CENSUS1920",
-      "title": "GLADIS JOHNSON, 9, 1920"
-    }
-  ],
-  "places": [
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "title": "JOHNSON HOCKEY ARENA"
-    },
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "title": "JOHNSON MINING COMPANY"
-    }
-  ],
-  "stories": [
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "title": "GLADIS JOHNSON was amazing!"
-    }
-  ]
+    "length": 6,
+    "size": "10",
+    "people": {
+         "length":2,
+         "results": [
+              {
+                "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                "recnumber": "74917173CENSUS1920",
+                "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school"
+              },
+              {
+                "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                "recnumber": "74917173CENSUS1920",
+                "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, home"
+              },
+              {
+                "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                "recnumber": "74917173CENSUS1920",
+                "title": "GLADIS JOHNSON, 9, 1920"
+              }
+           ],
+        },
+        "places": {
+           "length": 0,
+           "results": [
+                 {
+                   "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                   "title": "JOHNSON HOCKEY ARENA"
+                 },
+                 {
+                   "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                   "title": "JOHNSON MINING COMPANY"
+                 }
+            ],
+        }
+        "stories": {
+           "length": 0,
+           "results": [
+                  {
+                    "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+                    "title": "GLADIS JOHNSON was amazing!"
+                  }
+              ],
+      }
 }
 ```
 
 ### Markers
 
-Used to generate markers based on visible area
+Used to generate markers based on visible area. Active and inactive. Each marker actually represents a collection of records coincident at that location. 
 
 **Definition**
 
