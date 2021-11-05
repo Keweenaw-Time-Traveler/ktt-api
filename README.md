@@ -344,26 +344,53 @@ Get info needed for full details component
 
 ```json
 {
-  "sources": ["1920 Census MPC", "1940 Census MPC"],
-  "active": "1920 Census MPC",
-  "archivist": {
-    "name": "Chris Marr",
-    "email": "chris@monte.net"
-  },
-  "demographics": [
-    { "title": "Occupation", "value": "Laborer" },
-    { "title": "Work Place", "value": "Unnamed" },
-    { "title": "Birth Place", "value": "Calumet" }
+  "title": "John Smith",
+  "type": "people", //options: people, places, stories
+  "sources": [
+    {
+      "recname": "Census 1940 - home",
+      "recnumber": "044D128C-766A-40DD-B50C-9E7C92BD1386CENSUS1940",
+      "markerid": "-9845957.50182324|5980951.74837218",
+      "x": "-9845957.5018",
+      "y": "5980951.7484",
+      "map_year": "1942"
+    },
+    {
+      "recname": "Census 1930 - home",
+      "recnumber": "14446419CENSUS1930",
+      "markerid": "-9846103.02941176|5980673.38840383",
+      "x": "-9846103.0294",
+      "y": "5980673.3884",
+      "map_year": "1928"
+    },
   ],
-  "employment_history": [
-    { "title": "Occupation", "value": "Laborer" },
-    { "title": "Work Place", "value": "Unnamed" },
-    { "title": "Birth Place", "value": "Calumet" }
-  ],
-  "imigration_history": [
-    { "title": "Occupation", "value": "Laborer" },
-    { "title": "Work Place", "value": "Unnamed" },
-    { "title": "Birth Place", "value": "Calumet" }
+  "data": [
+    {
+      "title": "Demographics",
+      "fields": [
+        {
+          "title": "Record year",
+          "value": "1930"
+        },
+        {
+          "title": "Last name",
+          "value": "MUNCH"
+        },
+      ]
+    },
+    {
+      "title": "Employment",
+      "fields": [
+        {
+          "title": "Industry",
+          "value": "COPPER MINE"
+        },
+        {
+          "title": "Occupation",
+          "value": "LABORER-SURFACE"
+        },
+      ]
+    },
   ],
   "images": [
     { "url": "http://ktt.com/image1.jpg", "alt": "First image" },
