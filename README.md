@@ -409,8 +409,11 @@ Get info needed for related content component
 
 **Request Body Arguments**
 
-- `"id": string`
-- `"recnumber": string`
+- `"recnumber": "3740SCLRCRD1918"`
+- `"markerid": "19173278|Laurium|bldg"`
+- `"loctype": "home"`
+- `"map_year": "1917"`
+
   **Response**
 
 - `200 OK` on success
@@ -425,9 +428,11 @@ Get info needed for related content component
         "length": 1,
         "results": [
           {
-            "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+            "markerid": "E4D43ADB-35C6-4981-BF75-358929DD871C",
             "recnumber": "74917173CENSUS1920",
-            "title": "JANE JOHNSON"
+            "title": "JANE JOHNSON",
+            "x": "-9845281.4237",
+            "y": "5980492.3729",
           }
         ]
       },
@@ -436,9 +441,11 @@ Get info needed for related content component
         "length": 1,
         "results": [
           {
-            "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+            "markerid": "E4D43ADB-35C6-4981-BF75-358929DD871C",
             "recnumber": "74917173CENSUS1920",
-            "title": "TOM SMITH"
+            "title": "TOM SMITH",
+            "x": "-9844975",
+            "y": "5980771",
           }
         ]
       }
@@ -451,9 +458,11 @@ Get info needed for related content component
         "length": 1,
         "results": [
           {
-            "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-            "recnumber": "74917173CENSUS1920",
-            "title": "Birth Home"
+            "id": "19173278|Laurium|bldg",
+            "recnumber": "3740SCLRCRD1918",
+            "title": "Birth Home",
+            "x": "-9845281.4237",
+            "y": "5980492.3729",
           }
         ]
       },
@@ -462,14 +471,18 @@ Get info needed for related content component
         "length": 2,
         "results": [
           {
-            "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-            "recnumber": "74917173CENSUS1920",
-            "title": "Houghton Grocery"
+            "id": "19173278|Laurium|bldg",
+            "recnumber": "3740SCLRCRD1918",
+            "title": "Houghton Grocery",
+            "x": "-9845281.4237",
+            "y": "5980492.3729",
           },
           {
-            "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-            "recnumber": "74917173CENSUS1920",
-            "title": "Downtown Cafe"
+            "id": "19173278|Laurium|bldg",
+            "recnumber": "3740SCLRCRD1918",
+            "title": "Downtown Cafe",
+            "x": "-9845281.4237",
+            "y": "5980492.3729",
           }
         ]
       }
@@ -481,12 +494,16 @@ Get info needed for related content component
       {
         "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
         "recnumber": "74917173CENSUS1920",
-        "title": "GLADIS JOHNSON was my grandma!"
+        "title": "GLADIS JOHNSON was my grandma!",
+        "x": "-9845281.4237",
+        "y": "5980492.3729",
       },
       {
         "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
         "recnumber": "74917173CENSUS1920",
-        "title": "GLADIS JOHNSON saved my cat!"
+        "title": "GLADIS JOHNSON saved my cat!",
+        "x": "-9845281.4237",
+        "y": "5980492.3729",
       }
     ]
   }
