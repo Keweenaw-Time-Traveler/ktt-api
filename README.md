@@ -428,8 +428,9 @@ Get info needed for related content component
         "length": 1,
         "results": [
           {
-            "markerid": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+            "id": "40F819D5-D072-4E9A-A55A-4E69A9B47F36",
             "recnumber": "74917173CENSUS1920",
+            "loctype": "home",
             "title": "JANE JOHNSON",
             "x": "-9845281.4237",
             "y": "5980492.3729",
@@ -441,8 +442,9 @@ Get info needed for related content component
         "length": 1,
         "results": [
           {
-            "markerid": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+            "id": "40F819D5-D072-4E9A-A55A-4E69A9B47F36",
             "recnumber": "74917173CENSUS1920",
+            "loctype": "home",
             "title": "TOM SMITH",
             "x": "-9844975",
             "y": "5980771",
@@ -460,6 +462,7 @@ Get info needed for related content component
           {
             "id": "19173278|Laurium|bldg",
             "recnumber": "3740SCLRCRD1918",
+            "loctype": "",
             "title": "Birth Home",
             "x": "-9845281.4237",
             "y": "5980492.3729",
@@ -473,6 +476,7 @@ Get info needed for related content component
           {
             "id": "19173278|Laurium|bldg",
             "recnumber": "3740SCLRCRD1918",
+            "loctype": "",
             "title": "Houghton Grocery",
             "x": "-9845281.4237",
             "y": "5980492.3729",
@@ -480,6 +484,7 @@ Get info needed for related content component
           {
             "id": "19173278|Laurium|bldg",
             "recnumber": "3740SCLRCRD1918",
+            "loctype": "",
             "title": "Downtown Cafe",
             "x": "-9845281.4237",
             "y": "5980492.3729",
@@ -494,6 +499,7 @@ Get info needed for related content component
       {
         "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
         "recnumber": "74917173CENSUS1920",
+        "loctype": "",
         "title": "GLADIS JOHNSON was my grandma!",
         "x": "-9845281.4237",
         "y": "5980492.3729",
@@ -501,6 +507,7 @@ Get info needed for related content component
       {
         "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
         "recnumber": "74917173CENSUS1920",
+        "loctype": "",
         "title": "GLADIS JOHNSON saved my cat!",
         "x": "-9845281.4237",
         "y": "5980492.3729",
