@@ -39,7 +39,8 @@ The items being counted are people, buildings, stories, and places from the live
                 "centroid": { //Lon and Lat of the grid cell 
                     "lon": "-9890000", 
                     "lat": "5890000"
-                }, //count, total, max, percent, and montenum support rendering grid cells based on the number of items within them, relative to all items returned that match the search and filter arguments
+                }, //count, total, max, percent, and montenum support rendering grid cells based on the number of items within them, 
+                   //relative to all items returned that match the search and filter arguments
                 "count": "1", //Count of items within this grid cell that match the search and filter arguments
                 "total": 13, //Total items within all grid cells returned that match the search and filter arguments
                 "max": 8, //Largest number of items in any grid cell that match the search and filter arguments
