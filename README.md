@@ -30,29 +30,67 @@ The items being counted are people, buildings, stories, and places from the live
 ```json
 {
   "active": {
-       "length":2,
-       "size":"10",
-       "results": [
+        "length": 4,  //number of grid cells returned 
+        "size": "10",
+        "results": [
             {
-              "id": "DJ-76",
-              "type": "story",
-              "centroid": {
-                  "lon": "-9859262.74853515",
-                  "lat": "5961983.47161866"
-              },
-              "percent": "0.01"
+                "id": "-989|589",
+                "type": "people",
+                "centroid": {
+                    "lon": "-9890000",
+                    "lat": "5890000"
+                },
+                "count": "1",
+                "total": 13,
+                "max": 8,
+                "percent": "0.08",
+                "montenum": "0.20",
+                "title": "1 records located near here"
             },
             {
-              "id": "DK-76",
-              "type": "story",
-              "centroid": {
-                  "lon": "-9857181.8527832",
-                  "lat": "5960782.06597902"
-              },
-              "percent": "0.50"
+                "id": "-987|595",
+                "type": "people",
+                "centroid": {
+                    "lon": "-9870000",
+                    "lat": "5950000"
+                },
+                "count": "1",
+                "total": 13,
+                "max": 8,
+                "percent": "0.08",
+                "montenum": "0.20",
+                "title": "1 records located near here"
+            },
+            {
+                "id": "-986|596",
+                "type": "people",
+                "centroid": {
+                    "lon": "-9860000",
+                    "lat": "5960000"
+                },
+                "count": "8",
+                "total": 13,
+                "max": 8,
+                "percent": "0.62",
+                "montenum": "1.00",
+                "title": "8 records located near here"
+            },
+            {
+                "id": "-985|598",
+                "type": "people",
+                "centroid": {
+                    "lon": "-9850000",
+                    "lat": "5980000"
+                },
+                "count": "3",
+                "total": 13,
+                "max": 8,
+                "percent": "0.23",
+                "montenum": "0.38",
+                "title": "3 records located near here"
             }
         ]
-  }
+    }
 }
 ```
 
