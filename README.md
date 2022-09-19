@@ -31,20 +31,20 @@ The items being counted are people, buildings, stories, and places from the live
 {
   "active": {
         "length": 4,  //number of grid cells returned 
-        "size": "10",
+        "size": "10", //size of grid requested
         "results": [
             {
-                "id": "-989|589",
-                "type": "people",
-                "centroid": {
-                    "lon": "-9890000",
+                "id": "-989|589", //ID of grid cell
+                "type": "people", //Type of items within this grid cell that match the search and filter arguments
+                "centroid": { //Lon and Lat of the grid cell 
+                    "lon": "-9890000", 
                     "lat": "5890000"
-                },
-                "count": "1",
-                "total": 13,
-                "max": 8,
-                "percent": "0.08",
-                "montenum": "0.20",
+                }, //count, total, max, percent, and montenum support rendering grid cells based on the number of items within them, relative to all items returned that match the search and filter arguments
+                "count": "1", //Count of items within this grid cell that match the search and filter arguments
+                "total": 13, //Total items within all grid cells returned that match the search and filter arguments
+                "max": 8, //Largest number of items in any grid cell that match the search and filter arguments
+                "percent": "0.08", //Percent contribution of this grid cell to total items returned that match the search and filter arguments
+                "montenum": "0.20", //Similar to percent but with a floor of 0.20 applied
                 "title": "1 records located near here"
             },
             {
