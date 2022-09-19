@@ -5,7 +5,8 @@ In progress google sheet of columns in each table in the database. Currently inc
 
 Summary of data within variable sized rectangular grids based on the Web-Mercator Coordinate system, returned as grid points
 size argument changes the size of grid returned.
-search and filters arguments will return a summary of grid cells that contain items matching those arguments.  
+search and filters arguments will return a summary of grid cells that contain items matching those arguments. 
+Only Active results (those matching search and filter arguments) will be included in the grid summary. Inactive results are not implemented. 
 The items being counted are people, buildings, stories, and places from the live Kett explorer app.
 
 **Definition**
