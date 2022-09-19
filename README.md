@@ -3,13 +3,13 @@ In progress google sheet of columns in each table in the database. Currently inc
 
 ### Grid
 
-10km, 1km, 100m rectangular grid based on the MGRS over a large chunk of the Western UP
-Right now with about 7,000 points and 4,000 grid cells
+Summary of data within variable sized rectangular grids based on the Web-Mercator Coordinate system, returned as grid points
+size argument changes the size of grid returned.
+search and filters arguments will return a summary of grid cells that contain items matching those arguments.  
 The items being counted are people, buildings, stories, and places from the live Kett explorer app.
 
 **Definition**
 
-`GET https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KettGridStatsStatic/FeatureServer`
 `GET http://geospatialresearch.mtu.edu/grid.php`
 
 **Request Body Arguments**
@@ -19,8 +19,8 @@ The items being counted are people, buildings, stories, and places from the live
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
-  - `"featured": boolean` should list include results that are featured
-  - `"advanced": object` list of advanced fileters like record type
+  - `"featured": boolean` not yet implemented -- should list include results that are featured
+  - `"type": object` list of results of a specific type ie. people, buildings, stories
 
 **Response**
 
