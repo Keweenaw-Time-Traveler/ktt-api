@@ -97,7 +97,7 @@ The items being counted are people, buildings, stories, and places from the live
 
 ### The Grid Cell
 
-What goes in the popup when you click on a grid cell. Records in the grid cell that match the search text and filters. 
+What goes in the popup when you click on a grid cell. Records in the grid cell matching the submitted "id", that also match the search text and filters. 
 
 **Definition**
 
