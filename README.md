@@ -243,14 +243,14 @@ Used to generate markers based on visible area. Active and inactive; results for
 
 ### Marker Info
 
-Get info needed for marker popup; A selected record from the search results list will be highlighted in this list of all records coincident at this marker location.  
-When search string and/or filters are passed, active items in marker info results will be those that match this string. Inactive items will be those that don't match these.
-ID is required. This is passed from the marker that the user clicks on. All results are for a single marker location. 
+Get info needed for marker popup; When a search string is passed, a selected record matching that string will be highlighted in this list of all records coincident at this marker location.   
+Active items are all items within the passed date_range, whether or not they match the search text. Inactive items will be those that don't match these, perhaps in a different time period or not matching filters. 
+ID is the Marker ID and is required. This is typically passed from the marker that the user clicks on. All results are for a single marker location. 
 Recnumber is passed when a record is clicked from the search list at left. List items in this marker info list that match this record are highlighted. 
 
 **Definition**
 
-`GET http://geospatialresearch.mtu.edu/marker.php`
+`POST http://geospatialresearch.mtu.edu/marker.php`
 
 **Request Body Arguments**
 
@@ -269,9 +269,9 @@ Recnumber is passed when a record is clicked from the search list at left. List 
 ```json
 {
     "active": {
-        "length": 40,
+        "length": 40,  \\total records at this marker matching filters and date_range
         "people": {
-            "length": 40,
+            "length": 40, \\total person records at this marker matching filters and date_range
             "results": [
                 {
                     "id": "7FDC589E-79D0-4F42-806A-14027F6A3936",
@@ -279,7 +279,7 @@ Recnumber is passed when a record is clicked from the search list at left. List 
                     "title": "FRANCIS N MILLER, 14, SINGLE",
                     "photos": "false",
                     "featured": "false",
-                    "highlighted": "true"
+                    "highlighted": "true" //true because this matches the search text. 
                 },
                 {
                     "id": "DB8C38C6-1A10-44D3-AB1E-65AA9A8FE0A6",
@@ -287,7 +287,7 @@ Recnumber is passed when a record is clicked from the search list at left. List 
                     "title": "THOMAS MILLS, HEAD FEEDER, 60, WIDOW",
                     "photos": "false",
                     "featured": "false",
-                    "highlighted": "false"
+                    "highlighted": "false"  //false because this does not match the search text
                 }, 
                 ...,
                 {
