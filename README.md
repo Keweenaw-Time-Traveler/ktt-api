@@ -18,7 +18,6 @@ The items being counted are people, buildings, stories, and places from the live
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
-  - `"featured": boolean` not yet implemented -- should list include results that are featured
   - `"type": object` list of results of a specific type ie. people, buildings, stories
 
 **Response**
@@ -108,8 +107,7 @@ What goes in the popup when you click on a grid cell. Records in the grid cell m
 - `"filters": object`
   - `"date_range": string` date range to return results for, years
   - `"photos": boolean` should list include only results with photos
-  - `"featured": boolean` should list include only results that are featured
-  
+   
 **Response**
 
 - `200 OK` on success
