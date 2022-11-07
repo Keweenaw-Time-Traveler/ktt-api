@@ -270,9 +270,9 @@ Recnumber is passed when a record is clicked from the search list at left. List 
 ```json
 {
     "active": {
-        "length": 40,  \\total records at this marker matching filters and date_range
+        "length": 40,  //total records at this marker matching filters and date_range
         "people": {
-            "length": 40, \\total person records at this marker matching filters and date_range
+            "length": 40, //total person records at this marker matching filters and date_range
             "results": [
                 {
                     "id": "7FDC589E-79D0-4F42-806A-14027F6A3936", \\Person ID
@@ -319,15 +319,15 @@ Get info needed for list component
 
 **Definition**
 
-`GET http://geospatialresearch.mtu.edu/list.php`
+`POST http://geospatialresearch.mtu.edu/list.php`
 
 **Request Body Arguments**
 
 - `"search": string` what the user entered in the search field
-- `"area": object` geometry of the area being viewed
+- `"area": object` geometry of the area being viewed, optional
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
-  - `"photos": boolean` should list include results with photos
+  - `"photos": boolean` should list include only results with photos?
   - `"type": string` one of the items in (default is 'everything'): people, places, stories, or everything
   
 **Response**
@@ -339,19 +339,40 @@ Get info needed for list component
   "length": 3,
   "results": [
     {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "recnumber": "74917173CENSUS1920",
-      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school"
+      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",  //Person id
+      "recnumber": "74917173CENSUS1920",  //record id
+      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, school"  //record instance title
+      "tooltip": "Born 1911 In Michigan, Single ", //Popup text
+      "loctype": "Home", //location type
+      "markerid": "-9844930.3306|5982575.1564",  //marker id
+      "x": "-9844930.3306",  // coordinates of location
+      "y": "5982575.1564",
+      "map_year": "1920", // corresponding map year
+      "method": "POST"  //request method used
     },
-    {
+    { 
       "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "recnumber": "74917173CENSUS1920",
-      "title": "GLADIS JOHNSON, 8, Albion School Grade KA, 1918, home"
-    },
-    {
-      "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-      "recnumber": "74917173CENSUS1920",
-      "title": "GLADIS JOHNSON, 9, 1920"
+      "recnumber": "12304SCLRCRD1918",
+      "title": "Gladys Johnson, 8, 1918 School",
+      "tooltip": "Aka: Gladis Johnson, Gladys Johnson,  Student, Ka Grade, Albion, 8, School",
+      "loctype": "School",
+      "markerid": "19171053|Laurium|bldg",
+      "x": "-9844746",
+      "y": "5983037",
+      "map_year": "1918",
+      "method": "POST"
+     },
+     {
+       "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
+        "recnumber": "14449131CENSUS1930",
+        "title": "Gladys C Johnson, 19, 1930 Home",
+        "tooltip": "Aka: Gladis Johnson, Born 1911 In Michigan, Servant, Single ",
+        "loctype": "Home",
+        "markerid": "-9844863.6468|5982639.7921",
+        "x": "-9844863.6468",
+        "y": "5982639.7921",
+        "map_year": "1930",
+        "method": "POST"
     }
   ]
 }
@@ -363,7 +384,7 @@ Get info needed for full details component
 
 **Definition**
 
-`GET http://geospatialresearch.mtu.edu/full_details.php`
+`POST http://geospatialresearch.mtu.edu/full_details.php`
 
 **Request Body Arguments**
 
