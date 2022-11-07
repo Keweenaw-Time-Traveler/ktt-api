@@ -1,5 +1,3 @@
-[DB Tables - Google Doc](https://docs.google.com/spreadsheets/d/1kBcGiiDpZbhpxYJAISRiu1Ta57z13zNx1jdwm6KrLr8/edit?usp=sharing)
-In progress google sheet of columns in each table in the database. Currently includes Census & school records. Adding column types and description. Kind of a schema.
 
 ### Grid
 
