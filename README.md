@@ -24,7 +24,7 @@ The items being counted are people, buildings, stories, and places from the live
 
 - `200 OK` on success
 
-```
+```json
 {
   "active": {
         "length": 4,  //number of grid cells returned 
