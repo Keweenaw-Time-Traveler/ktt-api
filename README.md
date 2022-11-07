@@ -250,13 +250,14 @@ Recnumber is passed when a record is clicked from the search list at left. List 
 
 **Definition**
 
-`POST http://geospatialresearch.mtu.edu/marker.php`
+`POST http://geospatialresearch.mtu.edu/marker_info.php`
 
 **Request Body Arguments**
 
 - `"search": string` what the user entered in the search field
 - `"id": string` Marker ID (pipe delimited concatenation of marker lon|lat)
 - `"recnumber": string`
+- `"loctype" : string' (optional; helps identify the record to highlight, currently 'home' or 'school'
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
@@ -274,10 +275,10 @@ Recnumber is passed when a record is clicked from the search list at left. List 
             "length": 40, \\total person records at this marker matching filters and date_range
             "results": [
                 {
-                    "id": "7FDC589E-79D0-4F42-806A-14027F6A3936",
-                    "recnumber": "74954582CENSUS1920",
-                    "title": "FRANCIS N MILLER, 14, SINGLE",
-                    "photos": "false",
+                    "id": "7FDC589E-79D0-4F42-806A-14027F6A3936", \\Person ID
+                    "recnumber": "74954582CENSUS1920", \\Record id
+                    "title": "FRANCIS N MILLER, 14, SINGLE", \\Title of record instance
+                    "photos": "false", 
                     "featured": "false",
                     "highlighted": "true" //true because this matches the search text. 
                 },
