@@ -712,7 +712,6 @@ Get info needed render date picker component
     ]
 }
 ```
-
 ### Map Picker
 
 Get info needed to populate maps list 
@@ -759,6 +758,35 @@ Get info needed to populate maps list
         }
     ]
 }
+```
+
+### Flag
+
+Flag content for removal. Returns confirmation if succesful, 'Item ID not found' if not found, 'tem ID Required' if none was submitted. 
+Removes content in the record locations table and flags for removal in the stand-alone story_pts feature class in EGDB. 
+
+**Definition**
+
+`POST http://geospatialresearch.mtu.edu/flag.php`
+
+**Request Body Arguments**
+
+- `"id": string`  // Record ID
+- `"action": string` // flag or unflag; default is flag
+- 
+**Response**
+
+- `200 OK` on success
+
+```json
+{
+    "results": [
+        { 
+          "Item ID ... flagged for removal";
+        }
+    ]
+} 
+
 ```
 
 ### Share a Story
