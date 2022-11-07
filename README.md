@@ -270,34 +270,42 @@ Recnumber is passed when a record is clicked from the search list at left. List 
 ```json
 {
     "active": {
-        "length": 40,  //total records at this marker matching filters and date_range
+        "length": 2175,  //total records at this marker matching filters and date_range
+        "title": "Enumeration District 169, 1920 Census", //title for the marker returned by this search
+        "geotype": "Enumeration District", //Type of geography represented
         "people": {
-            "length": 40, //total person records at this marker matching filters and date_range
+            "length": 2175, //total person records at this marker matching filters and date_range
             "results": [
                 {
-                    "id": "7FDC589E-79D0-4F42-806A-14027F6A3936", \\Person ID
-                    "recnumber": "74954582CENSUS1920", \\Record id
-                    "title": "FRANCIS N MILLER, 14, SINGLE", \\Title of record instance
+                    "id": "7FDC589E-79D0-4F42-806A-14027F6A3936", //Person ID
+                    "recnumber": "74954582CENSUS1920", //Record id
+                    "loctype": "Home",
+                    "title": "FRANCIS N MILLER, 14, SINGLE", //Title of record instance
                     "photos": "false", 
                     "featured": "false",
-                    "highlighted": "true" //true because this matches the search text. 
+                    "highlighted": "true" //true because this matches the location type and record id and search text 
+                    "locid": "-9841558.5194|5974137.3698" // location id for this record
                 },
                 {
-                    "id": "DB8C38C6-1A10-44D3-AB1E-65AA9A8FE0A6",
-                    "recnumber": "74954548CENSUS1920",
-                    "title": "THOMAS MILLS, HEAD FEEDER, 60, WIDOW",
+                    "id": "0E72EB47-3A4B-40D1-9296-6606016B63E6",
+                    "recnumber": "74956099CENSUS1920",
+                    "loctype": "Home",
+                    "title": "Ada Gurry, 43, Home",
                     "photos": "false",
                     "featured": "false",
-                    "highlighted": "false"  //false because this does not match the search text
+                    "highlighted": "false", // false because this does not match the record number and location type
+                    "locid": "-9841558.5194|5974137.3698"
                 }, 
                 ...,
                 {
-                    "id": "463A84FE-74B2-4CD3-8B96-5E4F9A0B4791",
-                    "recnumber": "74955631CENSUS1920",
-                    "title": "ROBERT MILLER, 5, SINGLE",
+                    "id": "CB9FCE1F-8D6A-4FB9-9C2F-A89B6A565B7B",
+                    "recnumber": "74955180CENSUS1920",
+                    "loctype": "Home",
+                    "title": "Ada Swanson, 28, Home",
                     "photos": "false",
                     "featured": "false",
-                    "highlighted": "false"
+                    "highlighted": "false",
+                    "locid": "-9841558.5194|5974137.3698"
                 }
             ]
         },
