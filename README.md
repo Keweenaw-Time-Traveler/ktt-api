@@ -713,6 +713,54 @@ Get info needed render date picker component
 }
 ```
 
+### Map Picker
+
+Get info needed to populate maps list 
+
+**Definition**
+
+`POST http://geospatialresearch.mtu.edu/map_picker.php`
+
+**Request Body Arguments**
+
+- none; returns all maps in the collection (maps associated with date_picker + additional maps in DB table)
+
+**Response**
+
+- `200 OK` on success
+
+```json
+{
+    "maps": [  //array of maps
+        {
+            "min": 1925,  //date range of map, used for querying and selecting a 'date_bin' 
+            "max": 1938,
+            "url": "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/38_Aerials/MapServer",  //URL of map service
+            "title": "Aerial Photography 1938"  //Title of map
+        },
+        {
+            "min": 1914,
+            "max": 1924,
+            "url": "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/CH1915OwnershipMap/MapServer",
+            "title": "Calumet and Hecla Property Map 1915"
+        },
+        {
+            "min": 1956,
+            "max": 2022,
+            "url": "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/Cannon_Nicholson_Geology_Maps/MapServer",
+            "title": "Cannon & Nicholson Geology 1995"
+        },
+        ...
+        {
+            "min": 1946,
+            "max": 1955,
+            "url": "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/Kett_19496_FIPS/MapServer",
+            "title": "Sanborn Map 1949"
+        }
+    ]
+}
+```
+
 ### Share a Story
 
 Internal to code, not part of API. Should still document the RESTful ESRI method used here with an example
