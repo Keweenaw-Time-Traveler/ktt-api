@@ -396,6 +396,7 @@ Get info needed for full details component
 
 **Request Body Arguments**
 
+- `"loctype" : string`
 - `"id": string`
 - `"recnumber": string`
 
@@ -405,56 +406,152 @@ Get info needed for full details component
 
 ```json
 {
-  "title": "John Smith",
-  "type": "people", //options: people, places, stories
-  "sources": [
-    {
-      "recname": "Census 1940 - home",
-      "recnumber": "044D128C-766A-40DD-B50C-9E7C92BD1386CENSUS1940",
-      "markerid": "-9845957.50182324|5980951.74837218",
-      "x": "-9845957.5018",
-      "y": "5980951.7484",
-      "map_year": "1942"
-    },
-    {
-      "recname": "Census 1930 - home",
-      "recnumber": "14446419CENSUS1930",
-      "markerid": "-9846103.02941176|5980673.38840383",
-      "x": "-9846103.0294",
-      "y": "5980673.3884",
-      "map_year": "1928"
-    },
+  "title": "Francis N Miller",  //Title for details section
+    "geodescr": " 169, 1920 Census",  //description of mapped location
+    "geotype": "enumeration district",  //type of geography mapped
+    "type": "people",  //item type
+    "id": "7FDC589E-79D0-4F42-806A-14027F6A3936",  //Person id
+    "loctype": "Home",  //location type
+    "map_year": "1917",  //map year to display
+    "sources": [  //sources of data that can be displayed. Changing changes location displayed on map, and changes the time bin if a source is in another 'bin'
+        {
+            "recname": "Census 1910 - Home (Approximate)", // record instance name
+            "historyname": "Francis Muller, 5, Home", // text to put in search history
+            "recnumber": "197243802CENSUS1910", //record id
+            "markerid": "-9841902.3643|5973343.9977",  //marker id
+            "loctype": "home",  //location type
+            "geodescr": "3rd Street",  //description of geographic location mapped
+            "geotype": "street", //type of geography mapped
+            "x": "-9841902.3643", //coordinates of location mapped
+            "y": "5973343.9977",
+            "map_year": "1908", //map year to display
+            "selected": "false"  //Is this the record selected in the menu? Controls display of sources menu. 
+        },
+        {
+            "recname": "Census 1920 - Home (Approximate)",
+            "historyname": "Francis N Miller, 14, Home",
+            "recnumber": "74954582CENSUS1920",
+            "markerid": "-9841558.5194|5974137.3698",
+            "loctype": "home",
+            "geodescr": "Enumeration District 169, 1920 Census",
+            "geotype": "enumeration district",
+            "x": "-9841558.5194",
+            "y": "5974137.3698",
+            "map_year": "1917",
+            "selected": "true"
+        }
+    ],
+    "data": [
+        {
+            "title": "Location",  //Location description information
+            "fields": [
+                {
+                    "title": "enumeration district",
+                    "value": " 169, 1920 Census",
+                    "tooltip": "Census 1920"
+                }
+            ]
+        },
+        {
+            "title": "Demographics",  //demographics fields found for selected person and time bin
+            "fields": [
+                {
+                    "title": "Age",  // Title of record 
+                    "value": "14",   // Value of record
+                    "tooltip": "census 1920"  //Source of record
+                },
+                {
+                    "title": "Birth Year",
+                    "value": "1906",
+                    "tooltip": "census 1920"
+                },
+                {
+                    "title": "Birthplace",
+                    "value": "Michigan",
+                    "tooltip": "census 1920"
+                },
+                ...
+                {
+                    "title": "Relationship in House",
+                    "value": "Son",
+                    "tooltip": "census 1920"
+                }
+            ]
+        },
+        {
+            "title": "Employment",  //employment records
+            "fields": [
+                {
+                    "title": "Industry",
+                    "value": "",
+                    "tooltip": "census 1920"
+                },
+                {
+                    "title": "Occupation",
+                    "value": "",
+                    "tooltip": "census 1920"
+                }
+            ]
+        },
+        {
+            "title": "Education", // education records  
+            "fields": [
+                {
+                    "title": "Attended School This Year",
+                    "value": "Yes",
+                    "tooltip": "census 1920"
+                },
+                {
+                    "title": "Can Read",
+                    "value": "Yes",
+                    "tooltip": "census 1920"
+                },
+                {
+                    "title": "Can Write",
+                    "value": "Yes",
+                    "tooltip": "census 1920"
+                },
+               ...
+                {
+                    "title": "Speaks English",
+                    "value": "Yes",
+                    "tooltip": "census 1920"
+                }
+            ]
+        },
+        {
+            "title": "Immigration", //immigration records
+            "fields": [
+                {
+                    "title": "Citizenship",
+                    "value": "",
+                    "tooltip": "census 1920"
+                },
+                {
+                    "title": "Year Immigrated",
+                    "value": "",
+                    "tooltip": "census 1920"
+                }
+            ]
+        },
+        {
+            "title": "Housing", //housing records 
+            "fields": [
+                {
+                    "title": "Ownership",
+                    "value": "",
+                    "tooltip": "census 1920"
+                },
+                {
+                    "title": "Owns Home",
+                    "value": "",
+                    "tooltip": "census 1920"
+                }
+            ]
+        }
   ],
-  "data": [
-    {
-      "title": "Demographics",
-      "fields": [
-        {
-          "title": "Record year",
-          "value": "1930"
-        },
-        {
-          "title": "Last name",
-          "value": "MUNCH"
-        },
-      ]
-    },
-    {
-      "title": "Employment",
-      "fields": [
-        {
-          "title": "Industry",
-          "value": "COPPER MINE"
-        },
-        {
-          "title": "Occupation",
-          "value": "LABORER-SURFACE"
-        },
-      ]
-    },
-  ],
-  "images": [
-    { "url": "http://ktt.com/image1.jpg", "alt": "First image" },
+  "attachments": [  //Array of attachments to this record. These are examples only. Currently only stories have attachments in Kett. 
+    { "url": "http://ktt.com/image1.jpg", "alt": "First image" }, //URL of attached record
     { "url": "http://ktt.com/image2.jpg", "alt": "Second image" }
   ]
 }
