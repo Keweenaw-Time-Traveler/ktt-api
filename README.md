@@ -116,11 +116,11 @@ What goes in the popup when you click on a grid cell. Records in the grid cell m
 ```json
 {
   "active": {
-          "length": 6,
-          "size": "10",
-          "people": {
-               "length":2,
-               "results": [
+          "length": 6,  //Total number of records of all types in this grid cell
+          "size": "10",  //'size' of the grid
+          "people": {  //results for people
+               "length":3,  //number of people records in this grid cell
+               "results": [   //record info
                     {
                       "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
                       "recnumber": "74917173CENSUS1920",
