@@ -28,7 +28,8 @@ The items being counted are people, buildings, stories, and places from the live
 
 ```json
 {
-  "active": {
+  "active": { // I need an office
+  right now
         "length": 4,  //number of grid cells returned 
         "size": "10", //size of grid requested
         "results": [
