@@ -9,7 +9,7 @@ The items being counted are people, buildings, stories, and places from the live
 
 **Definition**
 
-`GET http://geospatialresearch.mtu.edu/grid.php`
+`POST http://geospatialresearch.mtu.edu/grid.php`
 
 **Request Body Arguments**
 
@@ -98,7 +98,7 @@ What goes in the popup when you click on a grid cell. Records in the grid cell m
 
 **Definition**
 
-`GET http://geospatialresearch.mtu.edu/grid_cell.php`
+`POST http://geospatialresearch.mtu.edu/grid_cell.php`
 
 **Request Body Arguments**
 
@@ -170,7 +170,7 @@ Used to generate markers based on visible area. Active and inactive; results for
 
 **Definition**
 
-`GET http://geospatialresearch.mtu.edu/markers.php`
+`POST http://geospatialresearch.mtu.edu/markers.php`
 
 **Request Body Arguments**
 
