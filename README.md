@@ -18,7 +18,7 @@ The items being counted are people, buildings, stories, and places from the live
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
-  - `"type": object` list of results of a specific type ie. people, buildings, stories
+  - `"type": string` one of the items in (default is 'everything'): people, places, stories, or everything
 
 **Response**
 
@@ -106,7 +106,8 @@ What goes in the popup when you click on a grid cell. Records in the grid cell m
 - `"id": string` grid id (truncated lon|lat) normally obtained from the grid results
 - `"filters": object`
   - `"date_range": string` date range to return results for, years
-  - `"photos": boolean` should list include only results with photos
+  - `"photos": boolean` should list include only results with photos?
+  - `"type": string` one of the items in (default is 'everything'): people, places, stories, or everything
    
 **Response**
 
@@ -165,7 +166,7 @@ What goes in the popup when you click on a grid cell. Records in the grid cell m
 
 ### Markers
 
-Used to generate markers based on visible area. Active and inactive; results for every marker location. Each marker actually represents a collection of records coincident at that location. 
+Used to generate markers based on visible area. Active and inactive; results for every marker location. Each marker represents a collection of records coincident at that location. 
 
 **Definition**
 
@@ -183,10 +184,8 @@ Used to generate markers based on visible area. Active and inactive; results for
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
-  - `"featured": boolean` should list include results that are featured
-  - `"type": string` all, people, places, stories
-  - `"advanced": object` list of advanced fileters like record type
-
+  - `"type": string` one of the items in (default is 'everything'): people, places, stories, or everything
+  
 **Response**
 
 - `200 OK` on success
@@ -261,8 +260,7 @@ Recnumber is passed when a record is clicked from the search list at left. List 
 - `"filters": object`
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
-  - `"featured": boolean` should list include results that are featured
-  - `"type": string`
+  - `"type": string` one of the items in (default is 'everything'): people, places, stories, or everything
 
 **Response**
 
@@ -327,12 +325,10 @@ Get info needed for list component
 - `"search": string` what the user entered in the search field
 - `"area": object` geometry of the area being viewed
 - `"filters": object`
-  - `"type": string` Everything, People, Place, Stories
   - `"date_range": string` if date range selector bar is used
   - `"photos": boolean` should list include results with photos
-  - `"featured": boolean` should list include results that are featured
-  - `"advanced": object` list of advanced fileters like record type
-
+  - `"type": string` one of the items in (default is 'everything'): people, places, stories, or everything
+  
 **Response**
 
 - `200 OK` on success
