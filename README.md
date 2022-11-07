@@ -24,12 +24,9 @@ The items being counted are people, buildings, stories, and places from the live
 
 - `200 OK` on success
 
- Hi my name is Ryan!
-
 ```json
 {
-  "active": { // I need an office
-  right now
+  "active": 
         "length": 4,  //number of grid cells returned 
         "size": "10", //size of grid requested
         "results": [
