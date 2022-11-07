@@ -192,15 +192,15 @@ Used to generate markers based on visible area. Active and inactive; results for
 
 ```json
 {
-  "active": {
-    "length": 2,
-    "results": [
+  "active": {  //'active' results that match search and filters
+    "length": 2, //number of markers found with matching records in them
+    "results": [  
         {
-                "id": "-9845873|5981915",
-                "type": "person",
-                "x": "-9845873",
-                "y": "5981915",
-                "count": "1"
+                "id": "-9845873|5981915",  //marker id, truncated lon|lat, many records may be in each marker
+                "type": "person", //type of items in this marker (person, place, story, everything)
+                "x": "-9845873", //longitude
+                "y": "5981915", //latitude
+                "count": "1" //number of matching records in this marker
         },
         {
                 "id": "-9846844.4305|5982883.272",
