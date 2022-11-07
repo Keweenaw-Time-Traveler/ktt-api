@@ -3,7 +3,7 @@ In progress google sheet of columns in each table in the database. Currently inc
 
 ### Grid
 
-Summary of data within variable sized rectangular grids based on the Web-Mercator Coordinate system, returned as grid points
+Summary of data within variable sized rectangular grids based on truncating the Web-Mercator Coordinates for each item and grouping results by those truncated coordinates. Returned as grid points with attributes about number of items within each grid and size relative to all results returned in all grids. 
 size argument changes the size of grid returned.
 search and filters arguments will return a summary of grid cells that contain items matching those arguments. 
 Only Active results (those matching search and filter arguments) will be included in the grid summary. Inactive results are not implemented. 
