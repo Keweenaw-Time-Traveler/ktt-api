@@ -672,11 +672,11 @@ Get info needed render date picker component
 
 **Definition**
 
-`GET http://geospatialresearch.mtu.edu/date_picker.php`
+`POST http://geospatialresearch.mtu.edu/date_picker.php`
 
 **Request Body Arguments**
 
-- `"area": object` geometry of the area being viewed
+- none; returns valid date ranges
 
 **Response**
 
@@ -684,21 +684,32 @@ Get info needed render date picker component
 
 ```json
 {
-  "min": 1888,
-  "max": 2020,
-  "current_location": "Keweenaw",
-  "segments": [
-    {
-      "min": 1888,
-      "max": 1902,
-      "url": "https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KeTT_YYYY_FIPS/MapServer"
-    },
-    {
-      "min": 1903,
-      "max": 1940,
-      "url": "https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/KeTT_YYYY_FIPS/MapServer"
-    }
-  ]
+    "min": 1850,  //earliest year
+    "max": 2022,  //latest year
+    "segments": [  //date segments (aka 'bins') 
+        {
+            "min": 1850,  //min of this segment
+            "max": 1894,  //max of this segment
+            "map_year": 1888,  //map year to display with this segment
+            "url": "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/KeTT_1888_FIPS/MapServer",  //URL of map to display
+            "title": "1850-1894 (Sanborn Map 1888)"  //Title of displayed map
+        },
+       ... 
+        {
+            "min": 1946,
+            "max": 1955,
+            "map_year": 1949,
+            "url": "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/Kett_19496_FIPS/MapServer",
+            "title": "1946-1955 (Sanborn Map 1949)"
+        },
+        {
+            "min": 1956,
+            "max": 2022,
+            "map_year": 2022,
+            "url": null,
+            "title": "1956-2022 (No Historic Map)"
+        }
+    ]
 }
 ```
 
