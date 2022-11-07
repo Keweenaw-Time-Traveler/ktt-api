@@ -196,7 +196,7 @@ Used to generate markers based on visible area. Active and inactive; results for
     "length": 2, //number of markers found with matching records in them
     "results": [  
         {
-                "id": "-9845873|5981915",  //marker id, truncated lon|lat, many records may be in each marker
+                "id": "-9845873|5981915",  //marker id, truncated lon|lat OR building ID; many records may be in each marker
                 "type": "person", //type of items in this marker (person, place, story, everything)
                 "x": "-9845873", //longitude
                 "y": "5981915", //latitude
@@ -255,7 +255,7 @@ Recnumber is passed when a record is clicked from the search list at left. List 
 **Request Body Arguments**
 
 - `"search": string` what the user entered in the search field
-- `"id": string` Marker ID (pipe delimited concatenation of marker lon|lat)
+- `"id": string` Marker ID (pipe delimited concatenation of marker lon|lat OR building ID)
 - `"recnumber": string`
 - `"loctype" : string' (optional; helps identify the record to highlight, currently 'home' or 'school'
 - `"filters": object`
@@ -559,18 +559,17 @@ Get info needed for full details component
 
 ### Related Content
 
-Get info needed for related content component
+Get info needed for related content component. Items related to the full details item currently displayed. 
 
 **Definition**
 
-`GET http://geospatialresearch.mtu.edu/related_content.php`
+`POST http://geospatialresearch.mtu.edu/related_content.php`
 
 **Request Body Arguments**
 
-- `"recnumber": "3740SCLRCRD1918"`
-- `"markerid": "19173278|Laurium|bldg"`
-- `"loctype": "home"`
-- `"map_year": "1917"`
+- `"id": string`  // Person ID or Item ID to find families or classmates
+- `"mapyear": integer` // map year   
+- `"markerid": string` // marker ID to find items in same place
 
   **Response**
 
@@ -578,100 +577,91 @@ Get info needed for related content component
 
 ```json
 {
-  "length": 7,
-  "people": {
-    "groups": [
-      {
-        "title": "Family",
-        "length": 1,
-        "results": [
-          {
-            "id": "40F819D5-D072-4E9A-A55A-4E69A9B47F36",
-            "recnumber": "74917173CENSUS1920",
-            "loctype": "home",
-            "title": "JANE JOHNSON",
-            "x": "-9845281.4237",
-            "y": "5980492.3729",
-          }
+    "length": 5, //Total records in all groups
+    "people": {  // Related people records
+        "groups": [
+            {
+                "title": "Family", // Group title
+                "length": 2, //Number of records in this group
+                "map": false,  //displayed on the map? 
+                "results": [
+                    {
+                        "id": "FE02BE98-03BE-4E71-916B-ECDED2AE2AB9", //person id
+                        "recnumber": "74952594CENSUS1920",  // record number
+                        "title": "Maria Hagman, 61",  //record title
+                        "tooltip": "Maria Hagman",  //popup text
+                        "loctype": "Home", //location type
+                        "markerid": "5009|Lake Linden|bldg",  //Marker ID
+                        "x": "-9841576.7176",  //coords of marker
+                        "y": "5973198.3601",
+                        "map_year": "1917"  //map year to display
+                    },
+                    {
+                        "id": "C0EEF2BB-880A-4B2D-BF3C-82A56AFD689F",
+                        "recnumber": "74952593CENSUS1920",
+                        "title": "Oscar Hagman, 59",
+                        "tooltip": "Oscar Hagman",
+                        "loctype": "Home",
+                        "markerid": "5009|Lake Linden|bldg",
+                        "x": "-9841576.7176",
+                        "y": "5973198.3601",
+                        "map_year": "1917"
+                    }
+                ]
+            },
+            {
+                "title": "People at the Same Location",  
+                "length": 2,
+                "map": false,
+                "results": [
+                    {
+                        "id": "FE02BE98-03BE-4E71-916B-ECDED2AE2AB9",
+                        "recnumber": "74952594CENSUS1920",
+                        "title": "Maria Hagman, 61",
+                        "loctype": "Home",
+                        "markerid": "5009|Lake Linden|bldg",
+                        "x": "-9841576.7176",
+                        "y": "5973198.3601",
+                        "map_year": "1917"
+                    },
+                    {
+                        "id": "C0EEF2BB-880A-4B2D-BF3C-82A56AFD689F",
+                        "recnumber": "74952593CENSUS1920",
+                        "title": "Oscar Hagman, 59",
+                        "loctype": "Home",
+                        "markerid": "5009|Lake Linden|bldg",
+                        "x": "-9841576.7176",
+                        "y": "5973198.3601",
+                        "map_year": "1917"
+                    }
+                ]
+            }
         ]
-      },
-      {
-        "title": "Classmates",
-        "length": 1,
-        "results": [
-          {
-            "id": "40F819D5-D072-4E9A-A55A-4E69A9B47F36",
-            "recnumber": "74917173CENSUS1920",
-            "loctype": "home",
-            "title": "TOM SMITH",
-            "x": "-9844975",
-            "y": "5980771",
-          }
+    },
+    "places": {  //Related places (homes, schools...) 
+        "groups": [
+            {
+                "title": "Homes",
+                "length": 1,
+                "map": true,
+                "results": [
+                    {
+                        "id": "5009|Lake Linden|bldg",
+                        "recnumber": "5009|Lake Linden|1917",
+                        "title": "5994 Front, Lake Linden 1917",
+                        "loctype": "Home",
+                        "markerid": "5009|Lake Linden|bldg",
+                        "x": "-9841576.7176",
+                        "y": "5973198.3604",
+                        "map_year": "1917"
+                    }
+                ]
+            }
         ]
-      }
-    ]
-  },
-  "places": {
-    "groups": [
-      {
-        "title": "Homes",
-        "length": 1,
-        "results": [
-          {
-            "id": "19173278|Laurium|bldg",
-            "recnumber": "3740SCLRCRD1918",
-            "loctype": "",
-            "title": "Birth Home",
-            "x": "-9845281.4237",
-            "y": "5980492.3729",
-          }
-        ]
-      },
-      {
-        "title": "Places of Work",
-        "length": 2,
-        "results": [
-          {
-            "id": "19173278|Laurium|bldg",
-            "recnumber": "3740SCLRCRD1918",
-            "loctype": "",
-            "title": "Houghton Grocery",
-            "x": "-9845281.4237",
-            "y": "5980492.3729",
-          },
-          {
-            "id": "19173278|Laurium|bldg",
-            "recnumber": "3740SCLRCRD1918",
-            "loctype": "",
-            "title": "Downtown Cafe",
-            "x": "-9845281.4237",
-            "y": "5980492.3729",
-          }
-        ]
-      }
-    ]
-  },
-  "stories": {
-    "length": 2,
-    "results": [
-      {
-        "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-        "recnumber": "74917173CENSUS1920",
-        "loctype": "",
-        "title": "GLADIS JOHNSON was my grandma!",
-        "x": "-9845281.4237",
-        "y": "5980492.3729",
-      },
-      {
-        "id": "E4D43ADB-35C6-4981-BF75-358929DD871C",
-        "recnumber": "74917173CENSUS1920",
-        "loctype": "",
-        "title": "GLADIS JOHNSON saved my cat!",
-        "x": "-9845281.4237",
-        "y": "5980492.3729",
-      }
-    ]
-  }
+    },
+    "stories": {
+        "groups": []
+    }
 }
 ```
 
