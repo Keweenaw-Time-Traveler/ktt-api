@@ -791,7 +791,7 @@ Removes content in the record locations table and flags for removal in the stand
 
 ### Share a Story
 
-Internal to code, not part of API. Should still document the RESTful ESRI method used here with an example
+Utilizes the ESRI RESTful API for ArcGIS Server, https://portal1-geo.sabu.mtu.edu/server/sdk/rest/index.html#/02ss0000009m000000
 
 **Definition**
 
@@ -813,7 +813,7 @@ features:
                 
 **Example**
 f: json,
-adds: 
+features: 
 [{"geometry":{"spatialReference":{"wkid":3857},"x":-9845457.7826,"y":5980446.0865},
 "attributes":{
   "title":"Ryan Test",
@@ -833,19 +833,33 @@ adds:
 // need to update content below..... 
 - `200 OK` on success
 
-```json
-{
-  "message": "Story has been added",
-  "id": "2D5AD5AE-880C-41BC-BDEE-FF07E5C7DA81"
-}
-```
+f: json,
+adds: 
+[{"geometry":{"spatialReference":{"wkid":3857},"x":-9845457.7826,"y":5980446.0865},
+"attributes":{
+  "title":"Ryan Test",
+  "name":"Ryan Williams",
+  "description":"A test of the share a related story",
+  "beginDate":-1640995200000,
+  "endDate":-1640995200000,
+  "dateEstimated":1,
+  "userdate":"1918",
+  "mapyear":"1917",
+  "related_entity":"C957847D-08D0-4796-9AAE-5CC82AD6F6DB"
+  }
+}]
+
 
 - `500 Internal Server Error` on server error
 
-```json
 {
-  "message": "Sorry something went wrong"
+ "error": {
+  "code": 500,
+  "message": "Unable to complete operation.",
+  "details": [
+   "Parser error: Some parameters could not be recognized."
+  ]
+ }
 }
-```
 
 
