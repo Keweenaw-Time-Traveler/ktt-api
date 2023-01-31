@@ -795,16 +795,39 @@ Internal to code, not part of API. Should still document the RESTful ESRI method
 
 **Definition**
 
-`POST http://portal1-geo.sabu.mtu.edu/mtuarcgis.....`
+`POST https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0`
 
 **Request Body Arguments**
-// need to update content below..... 
-- `"title": string`
-- `"date": string`
-- `"story": string`
-- `"images": string`
-- `"name": string`
-- `"related": object` information needed to relate story to id or record
+f: format type,
+features: 
+    "geometry": {"x" : number, "y": number},
+    attributes: {"title": text,
+                "name":text,
+                "description":text,
+                "beginDate":date,
+                "endDate":date, 
+                "dateEstimated":boolean 1 or 0,
+                "userdate":"string year",
+                "mapyear":year of map to display,
+                "related_entity":"entity ID"
+                
+**Example**
+f: json,
+adds: 
+[{"geometry":{"spatialReference":{"wkid":3857},"x":-9845457.7826,"y":5980446.0865},
+"attributes":{
+  "title":"Ryan Test",
+  "name":"Ryan Williams",
+  "description":"A test of the share a related story",
+  "beginDate":-1640995200000,
+  "endDate":-1640995200000,
+  "dateEstimated":1,
+  "userdate":"1918",
+  "mapyear":"1917",
+  "related_entity":"C957847D-08D0-4796-9AAE-5CC82AD6F6DB"
+  }
+}]
+
 
 **Response**
 // need to update content below..... 
