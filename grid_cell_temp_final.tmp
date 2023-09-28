@@ -9,83 +9,32 @@
 //  throw new Exception('Content-Type must be application/json');
 //}
 // get variables and decode
-
-//$content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
-//if (stripos($content_type, 'application/json') === false) {
-//    header('HTTP/1.1 415 Unsupported Media Type');
-//    echo json_encode(['error' => 'Content-Type must be application/json']);
-//    exit();
-//}
-
-$body = file_get_contents("php://input");
-$trimmedBody = trim($body);
-$isEmpty = preg_match('/^(?:\{\s*\}|\[\s*\])$/', $trimmedBody);
-$isEmpty = $isEmpty ||  empty($body) || $trimmedBody === '{}' || $trimmedBody === '[]';
-
-function emptyResponse($responseMessage){
-    $response = [
-        "message" => "No data provided in the input. To request help, use the following example request:",
-        "body" => [
-            "request" => "help"
-        ]
-    ];
-    header($responseMessage);
-    header('Content-type: application/json');
-    echo json_encode($response, JSON_PRETTY_PRINT);
-    exit; // Stop execution after sending the message
-}
-if ($isEmpty) {
-    emptyResponse("HTTP/1.1 405 Method Not Allowed");
-}
-
-// Check if the request is for help
-if ($content_type === 'application/json') {
-    $object = json_decode($body, false);
-
-    if (isset($object->request) && $object->request === 'help') {
-        // Return API documentation with additional details
-        $documentation = [
-            "API Documentation" => "This is the API documentation. Please provide instructions on how to use the API.",
-            "Additional Details" => [
-                "search" => "string what the user entered in the search field",
-                "size" => "number grid size in km (10, 1, 0.1)",
-                "filters" => [
-                    "date_range" => "string if date range selector bar is used",
-                    "photos" => "boolean should list include results with photos",
-                    "type" => "string one of the items in (default is 'everything'): people, places, stories, or everything"
-                ]
-            ]
-        ];
-
-        header('Content-type: application/json');
-        header('HTTP/1.1 200 OK');
-        echo json_encode($documentation, JSON_PRETTY_PRINT);
-        exit; // Stop execution after sending the documentation
-    }
-}
-
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method != 'OPTIONS') {
+    $body = file_get_contents("php://input");
     $object = json_decode($body, false);
-    
-    $search = isset($object->search) ? str_replace("\'","",$object->search) : '0';
-    echo strlen($search);
-    if(strlen($search) < 2){
-        emptyResponse("HTTP/1.1 404 Not Found");
+
+    // Sanitize and validate input
+    $search = isset($object->search) ? trim($object->search) : '';
+    $search = strtolower($search);
+    $search = str_replace(["'", "\""], '', $search);
+    $search = preg_replace('/\s+/', ' ', $search); // Normalize spaces
+    $search = substr($search, 0, 255); // Limit the search input length
+
+    if (!empty($search)) {
+        $searchTerms = explode(' ', $search, 2);
+    } else {
+        $searchTerms = [];
     }
-    $search = strtolower($search); 
-    
-    //explode the search terms
-    $search_arr = explode(' ', $search, 3);
-    if(count($search_arr) > 2){array_pop($search_arr);} //only take the first two terms if more than two are sent.
-    
-    
-    $gid = isset($object->id) ? str_replace("\'","",$object->id) : 0;
-    $gsize = isset($object->size) ? str_replace("\'","",$object->size) : 10;
-    
-    $dates = isset($object->filters->date_range) ? str_replace("\'","",$object->filters->date_range) : '';
-    $photos = isset($object->filters->photos) ? str_replace("\'","",$object->filters->photos) : 'false';
-    $type = isset($object->filters->type) ? str_replace("\'","",$object->filters->type) : 'everything';
+
+    $gid = isset($object->id) ? trim($object->id) : '';
+    $gid = strtolower($gid);
+    $gid = str_replace(["'", "\""], '', $gid);
+    $gsize = isset($object->size) ? intval($object->size) : 10;
+
+    $dates = isset($object->filters->date_range) ? trim($object->filters->date_range) : '';
+    $photos = isset($object->filters->photos) ? strtolower(trim($object->filters->photos)) : 'false';
+    $type = isset($object->filters->type) ? trim($object->filters->type) : 'everything';
     $page = isset($object->page) ? intval($object->page) : 1;
     $pageSize = isset($object->pageSize) ? intval($object->pageSize) : 10;
 
@@ -201,27 +150,32 @@ if ($method != 'OPTIONS') {
     //query construction for different groups below...
 
     $offset = ($page - 1) * $pageSize;
+
+    $// Example for activePersonQuery
+    $activePersonQuery = "SELECT p.personid \"id\", a.recordid recnumber, a.title title, a.stitle stitle, a.loccode, a.loctype, a.byear min_year, ST_X(a.shape) lon, ST_Y(a.shape) lat
+    FROM grf.kett_record_locs a 
+    LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn '
+    LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
+    WHERE a.entitytype = 'person' AND lower(a.title) LIKE $1 AND lower(concat(p2.fnames, ' ', p2.lnames)) LIKE $2 AND concat((cast(((st_x(a.shape))/($3*1000)) as INT)),'|',(cast(((st_y(a.shape))/($3*1000)) as INT))) = lower($4) AND LOWER(a.photos) = $5 AND a.byear <= $6 AND a.eyear >= $7
+    LIMIT $8 OFFSET $9";
     
 
-    $activePersonQuery = "SELECT p.personid \"id\", a.recordid recnumber, a.title title, a.stitle stitle, a.loccode, a.loctype, a.byear min_year, ST_X(a.shape) lon, ST_Y(a.shape) lat
-                        FROM grf.kett_record_locs a 
-                        LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn '
-                        LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
-                        WHERE a.entitytype = 'person' ". $searchQryStrAct. " ".$gidQryStrAct." ".$photoQryStrAct." ".$dateQryStrAct."LIMIT $1 OFFSET $2;";
-   
+
     $activePlaceQuery = "SELECT a.recordid recnumber, a.title title, a.stitle stitle, a.loccode, a.loctype, a.byear min_year, ST_X(a.shape) lon, ST_Y(a.shape) lat
     FROM grf.kett_record_locs a 
     WHERE a.entitytype = 'building' AND lower(a.title) LIKE $1 ".$gidQryStrAct." ".$photoQryStrAct." ".$dateQryStrAct."
-    LIMIT $2 OFFSET $3";
-    
-    $activeStoryQuery = "SELECT a.recordid recnumber, a.title title, a.stitle stitle, a.loccode, a.loctype, a.byear min_year, ST_X(a.shape) lon, ST_Y(a.shape) lat
-    FROM grf.kett_record_locs a LEFT JOIN grf.kett_person_record_union ru ON ru.linkedrecordid = a.recordid LEFT JOIN grf.kett_people p2 ON p2.personid = ru.personid
-    WHERE a.entitytype = 'story' ".$searchQryStrActStory." ".$gidQryStrAct." ".$photoQryStrAct."
-    LIMIT $1 OFFSET $2";
-    
-    // Replace placeholders in the query with actual values using prepared statements.
-    
-    if ($f == 'json' || $f == 'pjson') {
+    LIMIT $2 OFFSET $3";        
+// Replace placeholders in the query with actual values using prepared statements.
+
+
+$activeStoryQuery = "SELECT a.recordid recnumber, a.title title, a.stitle stitle, a.loccode, a.loctype, a.byear min_year, ST_X(a.shape) lon, ST_Y(a.shape) lat
+FROM grf.kett_record_locs a LEFT JOIN grf.kett_person_record_union ru ON ru.linkedrecordid = a.recordid LEFT JOIN grf.kett_people p2 ON p2.personid = ru.personid
+WHERE a.entitytype = 'story' ".$searchQryStrActStory." ".$gidQryStrAct." ".$photoQryStrAct."
+LIMIT $1 OFFSET $2";
+
+
+
+    if($f == 'json' || $f == 'pjson'){//if no format was set or json was requested, issue the query and format the results as json.
         //============== change webuser password when gis-core is accessible ==================
         $dbConnStr = "host=portal1-geo.sabu.mtu.edu port=5432 dbname=giscore user=webuser password=sp@ghetti";
         $link = pg_connect($dbConnStr);
@@ -229,30 +183,36 @@ if ($method != 'OPTIONS') {
             throw new Exception('Database connection failed');
         }
         //====================================================
-    
-        // Prepare the statements
-        $stmtPerson = pg_prepare($link, "PersonQuery", $activePersonQuery);
-        $stmtPlace = pg_prepare($link, "PlaceQuery", $activePlaceQuery);
-        $stmtStory = pg_prepare($link, "StoryQuery", $activeStoryQuery);
-    
-        // Execute the statements with parameters
-        $paramsPerson = [
-            $pageSize,
-            $offset
-        ];
-        $paramsPlace = [
-            strtolower('%' . $search . '%'),
-            $pageSize,
-            $offset
-        ];
-        $paramsStory = [
-            $pageSize,
-            $offset
-        ];
-    
-        $activePersonResult = pg_execute($link, "PersonQuery", $paramsPerson);
-        $activePlaceResult = pg_execute($link, "PlaceQuery", $paramsPlace);
-        $activeStoryResult = pg_execute($link, "StoryQuery", $paramsStory);
+// Prepare the statements
+$stmtPerson = pg_prepare($link, "", $activePersonQuery);
+$stmtPlace = pg_prepare($link, "", $activePlaceQuery);
+$stmtStory = pg_prepare($link, "", $activeStoryQuery);
+
+// Execute the statements with parameters
+$paramsPerson = [
+    strtolower('%' . $search . '%'),
+    strtolower('%' . $search . '%'),
+    $gsize,
+    strtolower($gid),
+    strtolower($photo),
+    $dateRange[1],
+    $dateRange[0],
+    $pageSize,
+    $offset
+];
+$paramsPlace = [
+    strtolower('%' . $search . '%'),
+    $pageSize,
+    $offset
+];
+$paramsStory = [
+    $pageSize,
+    $offset
+];
+
+$activePersonResult = pg_execute($link, "", $paramsPerson);
+$activePlaceResult = pg_execute($link, "", $paramsPlace);
+$activeStoryResult = pg_execute($link, "", $paramsStory);
 
 
 
@@ -273,7 +233,7 @@ if ($method != 'OPTIONS') {
             while ($row = pg_fetch_assoc($activePersonResult)){
                 $properties = $row;
                 $person = array(
-                    
+
                     "id" => $row['id'],
                     "recnumber" => $row['recnumber'],
                     "title" => ucwords(strtolower($row['stitle'].', '.$row['min_year'].' '.$row['loctype'])),
@@ -285,17 +245,13 @@ if ($method != 'OPTIONS') {
                     "map_year" => $row['min_year']
 
                 );
-                // print_r($row);
-
-
                 array_push($people_results, $person);
 
             }
             $people['results'] = $people_results;
             $active['people'] = $people;
-            // print_r($people_results);
             $active['length'] = $active['length'] + $people_count;
-            $yourResultsArray['people'] = $people;
+            $yourResultsArray = $people;
 
         }
 
@@ -326,7 +282,7 @@ if ($method != 'OPTIONS') {
             $places['results'] = $places_results;
             $active['places'] = $places;
             $active['length'] = $active['length'] + $places_count;
-            $yourResultsArray['places'] = $places;
+            $yourResultsArray = $places;
         }
 
 
@@ -357,7 +313,7 @@ if ($method != 'OPTIONS') {
             $stories['results'] = $stories_results;
             $active['stories'] = $stories;
             $active['length'] = $active['length'] + $stories_count;
-            $yourResultsArray['stories'] = $stories;
+            $yourResultsArray = $stories;
 
         }
         $active['title'] = strval($active['length']) . ' Records';
@@ -385,21 +341,21 @@ if ($method != 'OPTIONS') {
 
 
         //$json = array('active' => $active);
-// // Modify your SQL query to count the total records
-//         $countQuery = "SELECT COUNT(*) AS total_records
-//     FROM grf.kett_record_locs a 
-//     LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn '
-//     LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
-//     WHERE a.entitytype = 'person' ". $searchQryStrAct. " ".$gidQryStrAct." ".$photoQryStrAct." ".$dateQryStrAct.";";
+// Modify your SQL query to count the total records
+        $countQuery = "SELECT COUNT(*) AS total_records
+    FROM grf.kett_record_locs a 
+    LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn '
+    LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
+    WHERE a.entitytype = 'person' ". $searchQryStrAct. " ".$gidQryStrAct." ".$photoQryStrAct." ".$dateQryStrAct.";";
 
-// // Execute the count query
-//         $countResult = pg_query($link, $countQuery) or die('count query error: ' . pg_last_error());
+// Execute the count query
+        $countResult = pg_query($link, $countQuery) or die('count query error: ' . pg_last_error());
 
-// // Fetch the total record count from the result
-//         $totalRecords = pg_fetch_assoc($countResult)['total_records'];
+// Fetch the total record count from the result
+        $totalRecords = pg_fetch_assoc($countResult)['total_records'];
 
-// // Print for debugging
-//         echo 'Total Records: ' . $totalRecords;
+// Print for debugging
+        echo 'Total Records: ' . $totalRecords;
 
 // Fetch the total record count from the result
         $totalRecords = pg_fetch_assoc($countResult)['total_records'];

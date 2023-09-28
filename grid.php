@@ -8,6 +8,55 @@
 //if (stripos($content_type, 'application/json') === false) {
 //  throw new Exception('Content-Type must be application/json');
 //}
+
+$content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+
+$body = file_get_contents("php://input");
+$trimmedBody = trim($body);
+$isEmpty = preg_match('/^(?:\{\s*\}|\[\s*\])$/', $trimmedBody);
+$isEmpty = $isEmpty ||  empty($body) || $trimmedBody === '{}' || $trimmedBody === '[]';
+
+function emptyResponse(){
+    $response = [
+        "message" => "No data provided in the input. To request help, use the following example request:",
+        "body" => [
+            "request" => "help"
+        ]
+    ];
+
+    header('Content-type: application/json');
+    echo json_encode($response, JSON_PRETTY_PRINT);
+    exit; // Stop execution after sending the message
+}
+if ($isEmpty) {
+    emptyResponse();
+}
+
+// Check if the request is for help
+if ($content_type === 'application/json') {
+    $object = json_decode($body, false);
+
+    if (isset($object->request) && $object->request === 'help') {
+        // Return API documentation with additional details
+        $documentation = [
+            "API Documentation" => "This is the API documentation. Please provide instructions on how to use the API.",
+            "Additional Details" => [
+                "search" => "string what the user entered in the search field",
+                "size" => "number grid size in km (10, 1, 0.1)",
+                "filters" => [
+                    "date_range" => "string if date range selector bar is used",
+                    "photos" => "boolean should list include results with photos",
+                    "type" => "string one of the items in (default is 'everything'): people, places, stories, or everything"
+                ]
+            ]
+        ];
+
+        header('Content-type: application/json');
+        echo json_encode($documentation, JSON_PRETTY_PRINT);
+        exit; // Stop execution after sending the documentation
+    }
+}
+
 // get variables and decode
 $method = $_SERVER['REQUEST_METHOD'];
 if($method != 'OPTIONS'){
@@ -16,7 +65,10 @@ if($method != 'OPTIONS'){
     $text_to_strip = array("\'","=",";","<",">",".","/","'");//attempt to prevent injection, but not recursive, need to improve
     $search = isset($object->search) ? trim(str_replace($text_to_strip,"%",$object->search)) : '0';
     $search = strtolower($search);
-    
+
+    if(!$search.$isEmpty)
+        emptyResponse();
+
      //explode the search terms
     $search_arr = explode(' ', $search, 3);
     if(count($search_arr) > 2){array_pop($search_arr);} //only take the first two terms if more than two are sent.

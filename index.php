@@ -18,3 +18,5 @@ require( dirname( __FILE__ ) . '/wordpress/wp-blog-header.php' );
 
 header('Access-Control-Allow-Origin: *');
 
+?>
+

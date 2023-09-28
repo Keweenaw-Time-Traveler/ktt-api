@@ -11,7 +11,9 @@ if (stripos($content_type, 'application/json') === false) {
 // get variables and decode
 $body = file_get_contents("php://input");
 $object = json_decode($body, false);
-
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1; // Current page number
+$per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10; // Items per page
+$offset = ($page - 1) * $per_page;
 $search = isset($object->search) ? str_replace("\'","",$object->search) : 0;
 $gid = isset($object->id) ? str_replace("\'","",$object->id) : 0;
 $dates = isset($object->filters->date_range) ? str_replace("\'","",$object->filters->date_range) : '';
@@ -58,25 +60,22 @@ if ($photos == 'true'){
     $photoQryStrInact = "";
 }
 
-//query construction for different groups below... 
-
-    $activePersonQuery = "SELECT p.personid \"id\", a.recordid recnumber, a.descr title
+// Modify your queries with OFFSET and LIMIT
+$activePersonQuery = "SELECT p.personid \"id\", a.recordid recnumber, a.descr title
                     FROM grf.kett_records_with_grids a 
                     LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid
-                    WHERE a.entitytype = 'person' AND LOWER(a.grid_id) = lower('".$gid."') AND LOWER(a.descr) LIKE lower('%".$search."%') ".$dateQryStrAct." ".$photoQryStrAct." ;"; 
-                  
-    //$inactivePersonQuery = "SELECT p.personid \"id\", a.recordid recnumber, a.descr title FROM grf.kett_records_with_grids a LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid WHERE a.entitytype = 'person' AND LOWER(a.grid_id) = lower('".$gid."') AND (".$dateQryStrInact." ".$photoQryStrInact." );"; 
-                    
-    $activePlaceQuery = "SELECT a.recordid recnumber, a.descr title
+                    WHERE a.entitytype = 'person' AND LOWER(a.grid_id) = lower('".$gid."') AND LOWER(a.descr) LIKE lower('%".$search."%') ".$dateQryStrAct." ".$photoQryStrAct." 
+                    LIMIT $per_page OFFSET $offset;";
+
+$activePlaceQuery = "SELECT a.recordid recnumber, a.descr title
                     FROM grf.kett_records_with_grids a 
-                    WHERE a.entitytype = 'building' AND LOWER(a.grid_id) = lower('".$gid."') AND LOWER(a.descr) LIKE lower('%".$search."%') ".$dateQryStrAct." ".$photoQryStrAct." ;"; 
-                  
-   // $inactivePlaceQuery = "SELECT a.recordid recnumber, a.descr title FROM grf.kett_records_with_grids a WHERE a.entitytype = 'building' AND LOWER(a.grid_id) = lower('".$gid."') AND (".$dateQryStrInact." ".$photoQryStrInact." );"; 
-                    
-     $activeStoryQuery = "SELECT a.recordid recnumber, a.descr title
+                    WHERE a.entitytype = 'building' AND LOWER(a.grid_id) = lower('".$gid."') AND LOWER(a.descr) LIKE lower('%".$search."%') ".$dateQryStrAct." ".$photoQryStrAct." 
+                    LIMIT $per_page OFFSET $offset;";
+
+$activeStoryQuery = "SELECT a.recordid recnumber, a.descr title
                     FROM grf.kett_records_with_grids a 
-                    WHERE a.entitytype = 'story' AND LOWER(a.grid_id) = lower('".$gid."') AND (LOWER(a.descr) LIKE lower('%".$search."%') OR LOWER(a.title) LIKE lower('%".$search."%') ) ".$dateQryStrAct." ".$photoQryStrAct." ;"; 
-                  
+                    WHERE a.entitytype = 'story' AND LOWER(a.grid_id) = lower('".$gid."') AND (LOWER(a.descr) LIKE lower('%".$search."%') OR LOWER(a.title) LIKE lower('%".$search."%') ) ".$dateQryStrAct." ".$photoQryStrAct." 
+                    LIMIT $per_page OFFSET $offset;";
 
 
 if($f == 'json' || $f == 'pjson'){//if no format was set or json was requested, issue the query and format the results as json.
@@ -84,67 +83,47 @@ if($f == 'json' || $f == 'pjson'){//if no format was set or json was requested, 
 	$link = pg_connect("host=gis-core.sabu.mtu.edu port=5432 dbname=giscore user=webuser password=sp@ghetti") or die('cannot connect to db');
 	//====================================================
 	$activePersonResult = pg_query($link, $activePersonQuery) or die('query error: '.$activePersonQuery);
-	//$inactivePersonResult = pg_query($link, $inactivePersonQuery) or die('query error: '.$inactivePersonQuery);
-    $activePlaceResult = pg_query($link, $activePlaceQuery) or die('query error: '.$activePlaceQuery);
-	//$inactivePlaceResult = pg_query($link, $inactivePlaceResult) or die('query error: '.$inactivePlaceResult);
-    $activeStoryResult = pg_query($link, $activeStoryQuery) or die('query error: '.$activeStoryQuery);
+$activePlaceResult = pg_query($link, $activePlaceQuery) or die('query error: '.$activePlaceQuery);
+$activeStoryResult = pg_query($link, $activeStoryQuery) or die('query error: '.$activeStoryQuery);
+
+// Bu
      
 
 	// build a JSON feature collection array. should think about making this a GeoJSON in future.
 	$results = array();
 
 	//loop through rows to fetch person data into arrays
-	if($type == 'people' || $type == 'all'){
-	    $person = array();
-		while ($row = pg_fetch_assoc($activePersonResult)){
-			$properties = $row;
-			$details = array(
-			        
-			        "id" => $row['id'],
-			        "recnumber" => $row['recnumber'],
-			        "title" => ucwords(strtolower($row['title']))
-			        
-			);
-			array_push($person, $details);
-		
-		}
-        $results['people'] = $person;
-	}
-	
-	//loop through rows to fetch place data into arrays
-	if($type == 'places' || $type == 'all'){
-	    $place = array();
-		while ($row = pg_fetch_assoc($activePlaceResult)){
-			$properties = $row;
-			$details = array(
-			        
-			        "recnumber" => $row['recnumber'],
-			        "title" => $row['title']
-			        
-			);
-			array_push($place, $details);
-		
-		}
-        $results['places'] = $place;
-	}
-	
-	
-	//loop through rows to fetch story data into arrays
-	if($type == 'stories' || $type == 'all'){
-	    $story = array();
-		while ($row = pg_fetch_assoc($activeStoryResult)){
-			$properties = $row;
-			$details = array(
-			        
-			        "recnumber" => $row['recnumber'],
-			        "title" => $row['title']
-			        
-			);
-			array_push($story, $details);
-		
-		}
-        $results['stories'] = $story;
-	}
+	$person = array();
+while ($row = pg_fetch_assoc($activePersonResult)){
+    // Build individual person details
+    $details = array(
+        "id" => $row['id'],
+        "recnumber" => $row['recnumber'],
+        "title" => ucwords(strtolower($row['title']))
+    );
+    array_push($person, $details);
+}
+
+$place = array();
+while ($row = pg_fetch_assoc($activePlaceResult)){
+    // Build individual place details
+    $details = array(
+        "recnumber" => $row['recnumber'],
+        "title" => $row['title']
+    );
+    array_push($place, $details);
+}
+
+$story = array();
+while ($row = pg_fetch_assoc($activeStoryResult)){
+    // Build individual story details
+    $details = array(
+        "recnumber" => $row['recnumber'],
+        "title" => $row['title']
+    );
+    array_push($story, $details);
+}
+
 //	    $inactive = array();
 //		while ($row = pg_fetch_assoc($inactivePersonResult)){
 //			$properties = $row;
@@ -176,12 +155,15 @@ if($f == 'json' || $f == 'pjson'){//if no format was set or json was requested, 
 header('Content-type: application/json');
 //header('Access-Control-Allow-Origin: *');
 header('Access-Control-Max-Age: 600');
-if($f == 'pjson' ){
-    echo json_encode($json, JSON_PRETTY_PRINT);
-} else { 
-    echo json_encode($json);
-   
-}
+$paginatedResults = array(
+    'page' => $page,
+    'per_page' => $per_page,
+    'people' => $person,
+    'places' => $place,
+    'stories' => $story
+);
+
+echo json_encode($paginatedResults, JSON_PRETTY_PRINT);
 //disconnect db
 
 ?>
