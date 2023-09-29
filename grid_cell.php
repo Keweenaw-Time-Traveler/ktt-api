@@ -69,7 +69,7 @@ if ($method != 'OPTIONS') {
     $object = json_decode($body, false);
     
     $search = isset($object->search) ? str_replace("\'","",$object->search) : '0';
-    echo strlen($search);
+
     if(strlen($search) < 2){
         emptyResponse("HTTP/1.1 404 Not Found");
     }

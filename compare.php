@@ -1,91 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Comparison</title>
-    <!-- Add Bootstrap CSS Link here -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>API Performance Comparison</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .loader {
+            display: none;
+        }
+        .results-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .card {
+            flex-basis: calc(50% - 20px); /* Two columns with gap */
+            margin-bottom: 20px;
+        }
+        canvas {
+            display: none;
+            max-width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="mb-4">API Comparison</h1>
-        <form method="POST">
-            <div class="form-group">
-                <label for="api1">API 1 URL:</label>
-                <input type="text" class="form-control" id="api1" name="api1" required>
+    <div class="container">
+        <h1 class="mb-4">API Performance Comparison</h1>
+        <div class="btn-container">
+            <button class="btn btn-primary" onclick="compareAPIs()">Compare APIs</button>
+            <div class="loader" id="loader">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="api2">API 2 URL:</label>
-                <input type="text" class="form-control" id="api2" name="api2" required>
+        </div>
+        <div class="results-container" id="results">
+            <div id="api1-results">
+                <h2>API 1 Responses</h2>
             </div>
-            <div class="form-group">
-                <label for="requestBody">Request Body:</label>
-                <textarea class="form-control" id="requestBody" name="requestBody" rows="6" required></textarea>
+            <div id="api2-results">
+                <h2>API 2 Responses</h2>
             </div>
-            <button type="submit" class="btn btn-primary">Compare APIs</button>
-        </form>
-
-        <?php
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            // Get API URLs and request body from the form
-            $api1Url = $_POST["api1"];
-            $api2Url = $_POST["api2"];
-            $requestBody = $_POST["requestBody"];
-            
-            // Create cURL handles for API 1 and API 2 requests
-            $ch1 = curl_init($api1Url);
-            $ch2 = curl_init($api2Url);
-
-            // Set cURL options
-            curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch1, CURLOPT_POST, true);
-            curl_setopt($ch2, CURLOPT_POST, true);
-            curl_setopt($ch1, CURLOPT_POSTFIELDS, $requestBody);
-            curl_setopt($ch2, CURLOPT_POSTFIELDS, $requestBody);
-
-            // Execute the cURL requests
-            $response_api1 = curl_exec($ch1);
-            $response_api2 = curl_exec($ch2);
-
-            // Get HTTP response codes
-            $httpCode_api1 = curl_getinfo($ch1, CURLINFO_HTTP_CODE);
-            $httpCode_api2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
-
-            // Check for cURL errors
-            if (curl_errno($ch1) || curl_errno($ch2)) {
-                echo "<p class='text-danger'>cURL Error: " . curl_error($ch1) . "</p>";
-                echo "<p class='text-danger'>cURL Error: " . curl_error($ch2) . "</p>";
-            }
-
-            // Check HTTP response codes
-            if ($httpCode_api1 === 200 && $httpCode_api2 === 200) {
-                // Both APIs returned a successful response
-                // Compare responses and determine which is better
-                $response1 = json_decode($response_api1, true);
-                $response2 = json_decode($response_api2, true);
-
-                // Perform your response comparison logic here
-
-                // Display comparison results
-                echo "<h2>Comparison Results</h2>";
-                echo "<p>API 1 Response:</p>";
-                echo "<pre>" . print_r($response1, true) . "</pre>";
-                echo "<p>API 2 Response:</p>";
-                echo "<pre>" . print_r($response2, true) . "</pre>";
-            } else {
-                // One or both APIs returned an error response
-                echo "<p class='text-danger'>API 1 HTTP Error Code: $httpCode_api1</p>";
-                echo "<p class='text-danger'>API 2 HTTP Error Code: $httpCode_api2</p>";
-            }
-
-            // Close cURL handles
-            curl_close($ch1);
-            curl_close($ch2);
-        }
-        ?>
-
+        </div>
+        <canvas id="chart-response-times"></canvas>
+        <canvas id="chart-response-sizes"></canvas>
     </div>
+
+    <script>
+        const apiEndpoints = [
+            "http://geospatialresearch.mtu.edu/grid_cell.php",
+            "http://localhost:8888/ktt-api/grid_cell.php"
+        ];
+
+        const requests = [
+            {
+                "search": "Johnson",
+            },
+            {
+                "search": "Michigan",
+                "filters": {
+                    "date_range": "2010-2011"
+                }
+            },
+            {
+                "search": "California",
+                "filters": {
+                    "date_range": "2010-2011"
+                }
+            },
+            {
+                "search": "Houghton",
+                "filters": {
+                    "date_range": "2010-2011"
+                }
+            }
+        ];
+
+        async function compareAPIs() {
+            const loader = document.getElementById("loader");
+            const api1ResultsDiv = document.getElementById("api1-results");
+            const api2ResultsDiv = document.getElementById("api2-results");
+            const chartResponseTimes = document.getElementById("chart-response-times");
+            const chartResponseSizes = document.getElementById("chart-response-sizes");
+            const responseTimes = [];
+            const responseSizes = [];
+
+            loader.style.display = "block"; // Show loader
+
+            for (let i = 0; i < apiEndpoints.length; i++) {
+                const endpoint = apiEndpoints[i];
+
+                for (let j = 0; j < requests.length; j++) {
+                    const request = requests[j];
+                    const searchData = JSON.stringify(request);
+                    const startTime = performance.now();
+
+                    try {
+                        const response = await fetch(endpoint, {
+    method: 'POST',
+    body: searchData,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
+const endTime = performance.now();
+const executionTime = endTime - startTime;
+
+let contentLength = 'N/A'; // Default value
+
+const contentLengthHeader = response.headers.get('content-length');
+if (contentLengthHeader) {
+    contentLength = parseInt(contentLengthHeader);
+} else {
+    // Calculate content length from the response body (not recommended for large responses)
+    const responseText = await response.text();
+    contentLength = responseText.length;
+}
+
+const resultHTML = `
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">API ${i + 1} - Request ${j + 1} URL</h5>
+            <p class="card-text">Response Time: ${executionTime.toFixed(2)} ms</p>
+            <p class="card-text">Response Size: ${contentLength} bytes</p>
+        </div>
+    </div>
+`;
+
+
+                        if (i === 0) {
+                            api1ResultsDiv.innerHTML += resultHTML;
+                        } else if (i === 1) {
+                            api2ResultsDiv.innerHTML += resultHTML;
+                        }
+
+                        // Update the chart data
+                        if (!responseTimes[j]) {
+                            responseTimes[j] = [];
+                            responseSizes[j] = [];
+                        }
+                        responseTimes[j].push(executionTime);
+                        responseSizes[j].push(parseInt(contentLength));
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+
+            loader.style.display = "none"; // Hide loader
+
+            // Create a single responsive bar chart for response times
+            chartResponseTimes.style.display = "block";
+            const ctxResponseTimes = chartResponseTimes.getContext("2d");
+            new Chart(ctxResponseTimes, {
+                type: 'bar',
+                data: {
+                    labels: ["Request 1", "Request 2"],
+                    datasets: [
+                        {
+                            label: 'API 1 Response Time (ms)',
+                            data: responseTimes[0],
+                            backgroundColor: `rgba(255, 99, 132, 0.2)`,
+                            borderColor: `rgba(255, 99, 132, 1)`,
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'API 2 Response Time (ms)',
+                            data: responseTimes[1],
+                            backgroundColor: `rgba(54, 162, 235, 0.2)`,
+                            borderColor: `rgba(54, 162, 235, 1)`,
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Create a single responsive bar chart for response sizes
+            chartResponseSizes.style.display = "block";
+            const ctxResponseSizes = chartResponseSizes.getContext("2d");
+            new Chart(ctxResponseSizes, {
+                type: 'bar',
+                data: {
+                    labels: ["Request 1", "Request 2"],
+                    datasets: [
+                        {
+                            label: 'API 1 Response Size (bytes)',
+                            data: responseSizes[0],
+                            backgroundColor: `rgba(255, 99, 132, 0.2)`,
+                            borderColor: `rgba(255, 99, 132, 1)`,
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'API 2 Response Size (bytes)',
+                            data: responseSizes[1],
+                            backgroundColor: `rgba(54, 162, 235, 0.2)`,
+                            borderColor: `rgba(54, 162, 235, 1)`,
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+    <!-- Include Bootstrap and Chart.js JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
