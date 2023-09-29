@@ -4,9 +4,12 @@
     <title>API Performance Comparison</title>
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Include Chart.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
         }
         .container {
             display: flex;
@@ -33,6 +36,11 @@
         .card {
             flex-basis: calc(50% - 20px); /* Two columns with gap */
             margin-bottom: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
         }
         canvas {
             display: none;
@@ -59,10 +67,11 @@
                 <h2>API 2 Responses</h2>
             </div>
         </div>
-        <canvas id="chart-response-times"></canvas>
-        <canvas id="chart-response-sizes"></canvas>
+        <canvas id="chart-response-times" style="max-width: 800px;"></canvas>
+        <canvas id="chart-response-sizes" style="max-width: 800px;"></canvas>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <script>
         const apiEndpoints = [
             "http://geospatialresearch.mtu.edu/grid_cell.php",
@@ -70,9 +79,7 @@
         ];
 
         const requests = [
-            {
-                "search": "Johnson",
-            },
+           
             {
                 "search": "Michigan",
                 "filters": {
@@ -80,10 +87,14 @@
                 }
             },
             {
-                "search": "California",
+                "search": "HG",
                 "filters": {
-                    "date_range": "2010-2011"
-                }
+                    "date_range": "1900-2011"
+                },
+                "pageSize": 10
+    },
+            {
+                "search": "Johnson",
             },
             {
                 "search": "Houghton",
@@ -99,8 +110,8 @@
             const api2ResultsDiv = document.getElementById("api2-results");
             const chartResponseTimes = document.getElementById("chart-response-times");
             const chartResponseSizes = document.getElementById("chart-response-sizes");
-            const responseTimes = [];
-            const responseSizes = [];
+            const responseTimes = [[], []];
+            const responseSizes = [[], []];
 
             loader.style.display = "block"; // Show loader
 
@@ -114,37 +125,28 @@
 
                     try {
                         const response = await fetch(endpoint, {
-    method: 'POST',
-    body: searchData,
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+                            method: 'POST',
+                            body: searchData,
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
 
-const endTime = performance.now();
-const executionTime = endTime - startTime;
+                        const endTime = performance.now();
+                        const executionTime = endTime - startTime;
+                        const responseText = await response.text();
+                        const contentLengthBytes = new TextEncoder().encode(responseText).length;
+                        const contentLengthMB = (contentLengthBytes / (1024 )).toFixed(2); // Convert to MB
 
-let contentLength = 'N/A'; // Default value
-
-const contentLengthHeader = response.headers.get('content-length');
-if (contentLengthHeader) {
-    contentLength = parseInt(contentLengthHeader);
-} else {
-    // Calculate content length from the response body (not recommended for large responses)
-    const responseText = await response.text();
-    contentLength = responseText.length;
-}
-
-const resultHTML = `
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">API ${i + 1} - Request ${j + 1} URL</h5>
-            <p class="card-text">Response Time: ${executionTime.toFixed(2)} ms</p>
-            <p class="card-text">Response Size: ${contentLength} bytes</p>
-        </div>
-    </div>
-`;
-
+                        const resultHTML = `
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">API ${i + 1} - Request ${j + 1} URL</h5>
+                                    <p class="card-text">Response Time: ${executionTime.toFixed(2)} ms</p>
+                                    <p class="card-text">Response Size: ${contentLengthMB} KB</p>
+                                </div>
+                            </div>
+                        `;
 
                         if (i === 0) {
                             api1ResultsDiv.innerHTML += resultHTML;
@@ -153,73 +155,46 @@ const resultHTML = `
                         }
 
                         // Update the chart data
-                        if (!responseTimes[j]) {
-                            responseTimes[j] = [];
-                            responseSizes[j] = [];
-                        }
-                        responseTimes[j].push(executionTime);
-                        responseSizes[j].push(parseInt(contentLength));
+                        responseTimes[i].push(executionTime);
+                        responseSizes[i].push(parseFloat(contentLengthMB));
                     } catch (error) {
                         console.error(error);
+
+                        // Handle errors by pushing placeholders (NaN) for missing data
+                        responseTimes[i].push(NaN);
+                        responseSizes[i].push(NaN);
                     }
                 }
             }
 
             loader.style.display = "none"; // Hide loader
 
-            // Create a single responsive bar chart for response times
+            // Create separate responsive bar charts for response times and sizes
             chartResponseTimes.style.display = "block";
-            const ctxResponseTimes = chartResponseTimes.getContext("2d");
-            new Chart(ctxResponseTimes, {
-                type: 'bar',
-                data: {
-                    labels: ["Request 1", "Request 2"],
-                    datasets: [
-                        {
-                            label: 'API 1 Response Time (ms)',
-                            data: responseTimes[0],
-                            backgroundColor: `rgba(255, 99, 132, 0.2)`,
-                            borderColor: `rgba(255, 99, 132, 1)`,
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'API 2 Response Time (ms)',
-                            data: responseTimes[1],
-                            backgroundColor: `rgba(54, 162, 235, 0.2)`,
-                            borderColor: `rgba(54, 162, 235, 1)`,
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Create a single responsive bar chart for response sizes
             chartResponseSizes.style.display = "block";
-            const ctxResponseSizes = chartResponseSizes.getContext("2d");
-            new Chart(ctxResponseSizes, {
+
+            createChart(chartResponseTimes, "Response Times (ms)", responseTimes);
+            createChart(chartResponseSizes, "Response Sizes (MB)", responseSizes);
+        }
+
+        function createChart(canvas, label, data) {
+            const ctx = canvas.getContext("2d");
+            new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ["Request 1", "Request 2"],
+                    labels: ["Request 1", "Request 2", "Request 3", "Request 4"],
                     datasets: [
                         {
-                            label: 'API 1 Response Size (bytes)',
-                            data: responseSizes[0],
-                            backgroundColor: `rgba(255, 99, 132, 0.2)`,
+                            label: 'API 1',
+                            data: data[0],
+                            backgroundColor: `rgba(255, 99, 132, 0.6)`,
                             borderColor: `rgba(255, 99, 132, 1)`,
                             borderWidth: 1
                         },
                         {
-                            label: 'API 2 Response Size (bytes)',
-                            data: responseSizes[1],
-                            backgroundColor: `rgba(54, 162, 235, 0.2)`,
+                            label: 'API 2',
+                            data: data[1],
+                            backgroundColor: `rgba(54, 162, 235, 0.6)`,
                             borderColor: `rgba(54, 162, 235, 1)`,
                             borderWidth: 1
                         }
@@ -237,8 +212,7 @@ const resultHTML = `
         }
     </script>
 
-    <!-- Include Bootstrap and Chart.js JavaScript -->
+    <!-- Include Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
