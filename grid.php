@@ -9,12 +9,36 @@
 //  throw new Exception('Content-Type must be application/json');
 //}
 
+function generateCacheKey($object)
+{
+    return md5(json_encode($object)); // You can use a better key generation method
+}
+
+// Function to check if the cache exists
+function isCacheExists($cacheKey)
+{
+    return file_exists('cache/' . $cacheKey);
+}
+
+// Function to get data from cache
+function getFromCache($cacheKey)
+{
+    return json_decode(file_get_contents('cache/' . $cacheKey), true);
+}
+
+// Function to store data in cache
+function storeInCache($cacheKey, $data)
+{
+    file_put_contents('cache/' . $cacheKey, json_encode($data));
+}
+
 $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
 
 $body = file_get_contents("php://input");
 $trimmedBody = trim($body);
 $isEmpty = preg_match('/^(?:\{\s*\}|\[\s*\])$/', $trimmedBody);
 $isEmpty = $isEmpty ||  empty($body) || $trimmedBody === '{}' || $trimmedBody === '[]';
+
 
 function emptyResponse(){
     $response = [
@@ -25,11 +49,8 @@ function emptyResponse(){
     ];
 
     header('Content-type: application/json');
-    echo json_encode($response, JSON_PRETTY_PRINT);
+    echo json_encode($response);
     exit; // Stop execution after sending the message
-}
-if ($isEmpty) {
-    emptyResponse();
 }
 
 // Check if the request is for help
@@ -52,10 +73,25 @@ if ($content_type === 'application/json') {
         ];
 
         header('Content-type: application/json');
-        echo json_encode($documentation, JSON_PRETTY_PRINT);
+        echo json_encode($documentation);
         exit; // Stop execution after sending the documentation
     }
 }
+
+
+// Generate a cache key based on the request parameters
+$cacheKey = generateCacheKey($body);
+
+// Check if the cache exists
+if (isCacheExists($cacheKey)) {
+    // Cache exists, retrieve and return data
+    $cachedData = getFromCache($cacheKey);
+    header('Content-type: application/json');
+//header('Access-Control-Allow-Origin: *');
+header('Access-Control-Max-Age: 86400');
+header('Access-Control-Allow-Headers: Content-Type');
+    echo json_encode($cachedData);
+} else {
 
 // get variables and decode
 $method = $_SERVER['REQUEST_METHOD'];
@@ -65,10 +101,6 @@ if($method != 'OPTIONS'){
     $text_to_strip = array("\'","=",";","<",">",".","/","'");//attempt to prevent injection, but not recursive, need to improve
     $search = isset($object->search) ? trim(str_replace($text_to_strip,"%",$object->search)) : '0';
     $search = strtolower($search);
-
-    if(!$search.$isEmpty)
-        emptyResponse();
-
      //explode the search terms
     $search_arr = explode(' ', $search, 3);
     if(count($search_arr) > 2){array_pop($search_arr);} //only take the first two terms if more than two are sent.
@@ -311,11 +343,13 @@ header('Content-type: application/json');
 //header('Access-Control-Allow-Origin: *');
 header('Access-Control-Max-Age: 86400');
 header('Access-Control-Allow-Headers: Content-Type');
+storeInCache($cacheKey, $json);
 if($f == 'pjson' ){
-    echo json_encode($json, JSON_PRETTY_PRINT);
+    echo json_encode($json);
 } else { 
     echo json_encode($json);
    
+}
 }
 //disconnect db
 

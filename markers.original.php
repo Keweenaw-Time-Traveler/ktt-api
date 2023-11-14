@@ -27,11 +27,7 @@ if($method != 'OPTIONS'){
         //$full_detail_search = true;
         
     //} //only take the first two terms if more than two are sent.
-
-    $page = isset($object->page) ? intval($object->page) : 1;
-    $pageSize = isset($object->pageSize) ? intval($object->pageSize) : 100;
-    $offset = ($page - 1) * $pageSize;
-
+    
     
     $gsize = isset($object->size) ? str_replace("\'","",$object->size) : 10;
     $valid_sizes = array("10","1","01",10,1,01);
@@ -152,87 +148,49 @@ if($method != 'OPTIONS'){
         $searchQryStrInact = "(";
     }
     
-    try {
-        $db = new PDO("pgsql:host=portal1-geo.sabu.mtu.edu;port=5432;dbname=giscore", "webuser", "sp@ghetti");
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e) {
-        die("Database connection failed: " . $e->getMessage());
-    }
     
-    $activeQuery = "SELECT COUNT(a.recordid) count, a.loccode, AVG(ST_X(a.shape)) lon, AVG(ST_Y(a.shape)) lat,
-    CASE WHEN COUNT(DISTINCT a.typedescr) > 1 THEN 'everything' ELSE MAX(a.typedescr) END AS \"type\"
-    FROM grf.kett_record_locs a
-    LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn ' 
-    LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
-    WHERE " . $bboxQry . " " .
-    $searchQryStrAct . " " .
-    $photoQryStrAct . " " . $dateQryStrAct . " " . $typeQryStrAct . "
-    GROUP BY a.loccode
-    LIMIT :pageSize OFFSET :offset";
-
-$activeStmt = $db->prepare($activeQuery);
-$activeStmt->bindParam(':pageSize', $pageSize, PDO::PARAM_INT);
-$activeStmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-$activeStmt->execute();
-$activeResult = $activeStmt->fetchAll(PDO::FETCH_ASSOC);
-$results = array();
-$activeids = array();
-    $totalRecordsQuery = "SELECT COUNT(*) FROM grf.kett_record_locs a
-                        LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn ' 
+       $activeQuery = "SELECT COUNT(a.recordid) count, a.loccode, AVG(ST_X(a.shape)) lon, AVG(ST_Y(a.shape)) lat,
+                        CASE WHEN COUNT(DISTINCT a.typedescr) > 1 THEN 'everything' ELSE MAX(a.typedescr) END AS \"type\"
+    	                FROM grf.kett_record_locs a
+    	                LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn ' 
                         LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
-                        WHERE (" . $bboxQry . " " .
-        $searchQryStrAct . " " .
-        $photoQryStrAct . " " . $dateQryStrAct . " " . $typeQryStrAct . ")";
-
-    if ($return_inactive === 'true') {
-        $totalRecordsQuery .= " OR (" . $bboxQry . " " .
-            $searchQryStrInact . " " .
-            $photoQryStrInact . " " . $dateQryStrInact . " " . $typeQryStrInact . ")";
-    }
-
-
-$totalRecordsStmt = $db->prepare($totalRecordsQuery);
-$totalRecordsStmt->execute();
-$totalRecords = intval($totalRecordsStmt->fetchColumn());
-
-// Include pagination details in the response
-$pagination = array(
-    'page' => $page,
-    'pageSize' => $pageSize,
-    'totalRecords' => $totalRecords,
-    'totalPages' => ceil($totalRecords / $pageSize)
-);
-
-$results['pagination'] = $pagination;
-
+    	                WHERE ".$bboxQry." ".
+    	                $searchQryStrAct . " " .
+    	                $photoQryStrAct." ".$dateQryStrAct."  ".$typeQryStrAct."  
+    	                GROUP BY a.loccode;";
     	                //(LOWER(a.title) LIKE ('%".$search."%') OR LOWER(a.descr) LIKE ('%".$search."%')) ".
-
-    $inactiveQuery = "SELECT COUNT(a.recordid) count, a.loccode, AVG(ST_X(a.shape)) lon, AVG(ST_Y(a.shape)) lat,
-                  CASE WHEN COUNT(DISTINCT a.typedescr) > 1 THEN 'everything' ELSE MAX(a.typedescr) END AS \"type\"
-                  FROM grf.kett_record_locs a
-                  LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn ' 
-                  LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
-                  WHERE " . $bboxQry . " " .
-        $searchQryStrInact . " " .
-        $photoQryStrInact . " " . $dateQryStrInact . " " . $typeQryStrInact . ") group by a.loccode LIMIT :pageSize OFFSET :offset";
-
-
-
-    //(LOWER(a.title) NOT LIKE ('%".$search."%') AND LOWER(a.descr) NOT LIKE ('%".$search."%') ".
+        
+      $inactiveQuery = "SELECT COUNT(a.recordid) count, a.loccode, AVG(ST_X(a.shape)) lon, AVG(ST_Y(a.shape)) lat,
+                        CASE WHEN COUNT(DISTINCT a.typedescr) > 1 THEN 'everything' ELSE MAX(a.typedescr) END AS \"type\"
+    	                FROM grf.kett_record_locs a
+    	                LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn ' 
+                        LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
+                        WHERE ".$bboxQry." ".
+                        $searchQryStrInact . " " .
+                        $photoQryStrInact." ".$dateQryStrInact." ".$typeQryStrInact."  )
+                        group by a.loccode;"; 
+                        
+                        //(LOWER(a.title) NOT LIKE ('%".$search."%') AND LOWER(a.descr) NOT LIKE ('%".$search."%') ".
                         // AND (a.date_range < ".$dateRange[0]." OR a.date_range > ".$dateRange[1].")
             
         
-
+    
     if($f == 'json' || $f == 'pjson'){//if no format was set or json was requested, issue the query and format the results as json.
     	//============== change webuser password when gis-core is accessible ==================
+    	$link = pg_connect("host=portal1-geo.sabu.mtu.edu port=5432 dbname=giscore user=webuser password=sp@ghetti") or die('cannot connect to db');
     	//====================================================
+    	$activeResult = pg_query($link, $activeQuery) or die('query error: '.$activeQuery);
+    	
     	// build a JSON feature collection array. should think about making this a GeoJSON in future.
+    	$results = array();
+        $activeids = array();
     	//loop through rows to fetch person data into arrays
     	if($p == 'person' || $p == 'all'){
     	    $active = array();
-            $active['length'] = $activeStmt->rowCount();
-            foreach ($activeResult as $row) {
-                $properties = $row;
+    	    $active['length'] = pg_num_rows($activeResult);
+    	    $active_results = array();
+    		while ($row = pg_fetch_assoc($activeResult)){
+    			$properties = $row;
     			//$centroid = array('centroid' => $row['grid_id']);//is this used?
     			
     			//if($row['type'] == 'person'){
@@ -254,37 +212,25 @@ $results['pagination'] = $pagination;
     			        "count" => $row['count']
     			       
     			);
-    			$active_results[] = $details;
-    			$activeids[] = $row['id'];
+    			array_push($active_results, $details);
+    			array_push($activeids, $row['id']);
     			//array_push($active, $properties);
     			//array_push($active, $centroid);
     		}
-            $active['results'] = $active_results; // Assign active results to the 'results' key in the 'active' array
+            $active['results'] = $active_results;
             $results['active'] = $active;
-        }
+    	}
     	
     	//loop through rows to fetch person data into arrays
     	if($return_inactive == 'true'){
-            $inactiveStmt = $db->prepare($inactiveQuery);
-
-// Bind parameters
-            $inactiveStmt->bindParam(':pageSize', $pageSize, PDO::PARAM_INT);
-            $inactiveStmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-
-// Execute the statement
-            $inactiveStmt->execute();
-
-// Fetch the results as an associative array
-            $inactiveResult = $inactiveStmt->fetchAll(PDO::FETCH_ASSOC);
+    	    
+    	    $inactiveResult = pg_query($link, $inactiveQuery) or die('query error: '.$inactiveQuery);
     	
         	if($p == 'person' || $p == 'all'){
-
         	    $inactive = array();
-                $inactive_results = array();
-
-                $inactive['length'] = $inactiveStmt->rowCount();
-
-                foreach ($inactiveResult as $row) {
+        	    $inactive['length'] = pg_num_rows($inactiveResult);
+        	    $inactive_results = array();
+        		while ($row = pg_fetch_assoc($inactiveResult)){
         			$properties = $row;
         			if (!in_array($row['loccode'],$activeids)){
         			    //$centroid = array('centroid' => $row['grid_id']);
@@ -313,16 +259,14 @@ $results['pagination'] = $pagination;
             			//array_push($active, $centroid);
         			}
         		}
-                $inactive['results'] = $inactive_results; // Assign inactive results to the 'results' key in the 'inactive' array
-                $results['inactive'] = $inactive; // Assign the 'inactive' array to the 'inactive' key in the main results array
-                $results['pagination'] = $pagination; // Make
+                $inactive['results'] = $inactive_results;
+                $results['inactive'] = $inactive;
     	    }
     	}
     	//$json = array('active' => $active);
     	$json = $results;
     	
-        $db = null; // Close the database connection
-
+        @ pg_close($link);
     }else{	//if format was set to help, don't issue the query but send user this text with the query that would have been submitted had they selected json format
     	$json = "you created this query: ".$activeQuery." and ".$inactiveQuery;
     }

@@ -9,6 +9,55 @@
 //  throw new Exception('Content-Type must be application/json');
 //}
 // get variables and decode
+
+$body = file_get_contents("php://input");
+$trimmedBody = trim($body);
+$isEmpty = preg_match('/^(?:\{\s*\}|\[\s*\])$/', $trimmedBody);
+$isEmpty = $isEmpty ||  empty($body) || $trimmedBody === '{}' || $trimmedBody === '[]';
+
+function emptyResponse($responseCode,$responseMessage){
+    $response = [
+        "message" => $responseMessage." To request help, use the following example request:",
+        "body" => [
+            "request" => "help"
+        ]
+    ];
+    header($responseCode);
+    header('Content-type: application/json');
+    echo json_encode($response, JSON_PRETTY_PRINT);
+    exit; // Stop execution after sending the message
+}
+if ($isEmpty) {
+    emptyResponse("HTTP/1.1 405 Method Not Allowed");
+}
+
+// Check if the request is for help
+if ($content_type === 'application/json') {
+    $object = json_decode($body, false);
+
+    if (isset($object->request) && $object->request === 'help') {
+        // Return API documentation with additional details
+        $documentation = [
+            "API Documentation" => "This is the API documentation. Please provide instructions on how to use the API.",
+            "Additional Details" => [
+                "search" => "string what the user entered in the search field",
+                "id" => "grid id (truncated lon|lat) normally obtained from the grid results",
+                "filters" => [
+                    "date_range" => "string if date range selector bar is used",
+                    "photos" => "boolean should list include results with photos",
+                    "type" => "string one of the items in (default is 'everything'): people, places, stories, or everything"
+                ]
+            ]
+        ];
+
+        header('Content-type: application/json');
+        header('HTTP/1.1 200 OK');
+        echo json_encode($documentation, JSON_PRETTY_PRINT);
+        exit; // Stop execution after sending the documentation
+    }
+}
+
+
 $method = $_SERVER['REQUEST_METHOD'];
 if($method != 'OPTIONS'){
     
@@ -22,6 +71,13 @@ if($method != 'OPTIONS'){
     $locid = isset($object->id) ? str_replace("\'","",$object->id) : 0;
     $gsize = isset($object->size) ? str_replace("\'","",$object->size) : 5;
     $recnumber = isset($object->recnumber) ? str_replace("\'","",$object->recnumber) : 0;
+
+	if(strlen($search) < 2){
+        emptyResponse("HTTP/1.1 405 Method Not Allowed","No data provided in the Search .");
+    }
+	if(strlen($locid) < 2){
+		emptyResponse("HTTP/1.1 405 Method Not Allowed","No data provided in the Location ID.");
+	}
     
     $loctype = isset($object->loctype) ? str_replace("\'","",$object->loctype) : 'none';
     if(!in_array(strtolower($loctype), array('home','school'))) $loctype = 'none';

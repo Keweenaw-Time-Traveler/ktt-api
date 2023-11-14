@@ -35,7 +35,8 @@ function emptyResponse($responseMessage){
     exit; // Stop execution after sending the message
 }
 if ($isEmpty) {
-    emptyResponse("HTTP/1.1 405 Method Not Allowed");
+    echo('Empty body');
+    // emptyResponse("HTTP/1.1 405 Method Not Allowed");
 }
 
 // Check if the request is for help
@@ -70,9 +71,9 @@ if ($method != 'OPTIONS') {
     
     $search = isset($object->search) ? str_replace("\'","",$object->search) : '0';
 
-    if(strlen($search) < 2){
-        emptyResponse("HTTP/1.1 404 Not Found");
-    }
+    // if(strlen($search) < 2){
+    //     emptyResponse("HTTP/1.1 405 Method Not Allowed");
+    // }
     $search = strtolower($search); 
     
     //explode the search terms
@@ -165,7 +166,7 @@ if ($method != 'OPTIONS') {
             $searchP2namePartsInact = "(";
             //$searchDescrPartsInact = "(";
 
-            foreach ($search_arr as $term){
+            foreach ($search_arr as $term){ 
                 //search for each term in the title, first name, and last name. Concat all those together to make a more concise statement. will find the term in any of title, fname, lname.
                 $searchTitleParts =  $searchTitleParts . " lower(a.title) LIKE '%".$term."%' AND ";
                 $searchP2nameParts = $searchP2nameParts . " lower(concat(p2.fnames, ' ', p2.lnames)) LIKE '%".$term."%' AND ";
@@ -364,51 +365,21 @@ if ($method != 'OPTIONS') {
         $results['active'] = $active;//move below other types
 
 
-        //	    $inactive = array();
-        //		while ($row = pg_fetch_assoc($inactivePersonResult)){
-        //			$properties = $row;
-        //			$centroid = array('centroid' => $row['grid_id']);
-        //			// alternate method
-        //			$details = array(
-        //
-        //			        "id" => $row['id'],
-        //			        "recnumber" => $row['recnumber'],
-        //			        "title" => $row['title']
-        //
-        //			);
-        //			array_push($inactive, $details);
-        //			//array_push($active, $properties);
-        //			//array_push($active, $centroid);
-        //		}
-        //        $results['inactive'] = $inactive;
 
-
-
-        //$json = array('active' => $active);
-// // Modify your SQL query to count the total records
-//         $countQuery = "SELECT COUNT(*) AS total_records
-//     FROM grf.kett_record_locs a 
-//     LEFT JOIN grf.kett_person_record_union p ON p.linkedrecordid = a.recordid AND p.tablename != 'Sanborn '
-//     LEFT JOIN grf.kett_people p2 ON p2.personid = p.personid
-//     WHERE a.entitytype = 'person' ". $searchQryStrAct. " ".$gidQryStrAct." ".$photoQryStrAct." ".$dateQryStrAct.";";
-
-// // Execute the count query
-//         $countResult = pg_query($link, $countQuery) or die('count query error: ' . pg_last_error());
-
-// // Fetch the total record count from the result
-//         $totalRecords = pg_fetch_assoc($countResult)['total_records'];
-
-// // Print for debugging
-//         echo 'Total Records: ' . $totalRecords;
-
-// Fetch the total record count from the result
-        $totalRecords = pg_fetch_assoc($countResult)['total_records'];
-        $totalPages = ceil($totalRecords / $pageSize);
-
-
-// Fetch the total record count from the result
-        $totalRecords = pg_fetch_assoc($countResult)['total_records'];
-        $totalPages = ceil($totalRecords / $pageSize);
+        $maxCount = max(
+            $active['people']['length'],
+            $active['places']['length'],
+            $active['stories']['length']
+        );
+        
+        // Compare the maximum count with the provided pageSize
+        $nextPage = ($maxCount >= $pageSize);
+        
+        // Set nextPage to false if maxCount is less than pageSize
+        if (!$nextPage) {
+            $nextPage = false;
+        }
+  
 
 // Create an array to hold pagination metadata and results
         $response = [
@@ -419,8 +390,8 @@ if ($method != 'OPTIONS') {
             'results' => $yourResultsArray, // Your fetched data
         ];
 
-// Calculate whether there is a next page
-        $nextPage = ($page < $totalPages);
+      
+        // Add nextPage to the response
         $response['nextPage'] = $nextPage;
 // Encode and return the response as JSON
         header('Content-type: application/json');
