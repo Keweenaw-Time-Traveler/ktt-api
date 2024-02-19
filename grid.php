@@ -92,7 +92,7 @@ header('Access-Control-Max-Age: 86400');
 header('Access-Control-Allow-Headers: Content-Type');
     echo json_encode($cachedData);
 } else {
-
+ 
 // get variables and decode
 $method = $_SERVER['REQUEST_METHOD'];
 if($method != 'OPTIONS'){
@@ -336,7 +336,7 @@ if($method != 'OPTIONS'){
     }else{	//if format was set to help, don't issue the query but send user this text with the query that would have been submitted had they selected json format
     	$json = "you created this query: ".$activeQuery." and ".$inactiveQuery;
     }
-}else{$json = "options request response";//options request 
+}else{$search = "options request response";//options request 
 }
 
 header('Content-type: application/json');

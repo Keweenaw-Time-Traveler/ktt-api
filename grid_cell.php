@@ -17,6 +17,9 @@
 //    exit();
 //}
 
+// Allow preflight requests to cache for 24 hours (86400 seconds)
+header("Access-Control-Max-Age: 86400");
+
 $body = file_get_contents("php://input");
 $trimmedBody = trim($body);
 $isEmpty = preg_match('/^(?:\{\s*\}|\[\s*\])$/', $trimmedBody);
@@ -29,14 +32,14 @@ function emptyResponse($responseMessage){
             "request" => "help"
         ]
     ];
-    header($responseMessage);
+
     header('Content-type: application/json');
     echo json_encode($response, JSON_PRETTY_PRINT);
     exit; // Stop execution after sending the message
 }
 if ($isEmpty) {
-    echo('Empty body');
-    // emptyResponse("HTTP/1.1 405 Method Not Allowed");
+    // echo('Empty body');
+    emptyResponse("HTTP/1.1 405 Method Not Allowed");
 }
 
 // Check if the request is for help
@@ -407,7 +410,7 @@ if ($method != 'OPTIONS') {
 
 
 header('Content-type: application/json');
-header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Max-Age: 86400');
 
