@@ -29,7 +29,7 @@ if($method != 'OPTIONS'){//'OPTIONS'
     	
     	$link = pg_connect("host=portal1-geo.sabu.mtu.edu port=5432 dbname=giscore user=webuser password=sp@ghetti") or die('cannot connect to db');
     	//====================================================
-    	$dateMapResult = pg_query($link, $dateMapQuery) or die('query error: '.$dateMapQuery);
+    	$dateMapResult = pg_query($link, $dateMapQuery) or die('query error: ');
     	
     
     	// build a JSON feature collection array. should think about making this a GeoJSON in future.

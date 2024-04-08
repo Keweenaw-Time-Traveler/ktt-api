@@ -37,6 +37,17 @@ function emptyResponse($responseMessage){
     echo json_encode($response, JSON_PRETTY_PRINT);
     exit; // Stop execution after sending the message
 }
+
+function handleQueryError($errorMessage , $statusCode = 500) {
+    $response = [
+        "error" => "An error occurred while processing your request. Please try again later or contact support for assistance.",
+        "details" => $errorMessage
+    ];
+    http_response_code($statusCode);
+    header('Content-type: application/json');
+    echo json_encode($response);
+    exit; // Stop execution after sending the error message
+}
 if ($isEmpty) {
     // echo('Empty body');
     emptyResponse("HTTP/1.1 405 Method Not Allowed");
@@ -230,7 +241,7 @@ if ($method != 'OPTIONS') {
         $dbConnStr = "host=portal1-geo.sabu.mtu.edu port=5432 dbname=giscore user=webuser password=sp@ghetti";
         $link = pg_connect($dbConnStr);
         if (!$link) {
-            throw new Exception('Database connection failed');
+            handleQueryError(" Query Error");
         }
         //====================================================
     

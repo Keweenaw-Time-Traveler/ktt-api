@@ -32,6 +32,18 @@ function storeInCache($cacheKey, $data)
     file_put_contents('cache/' . $cacheKey, json_encode($data));
 }
 
+function handleQueryError($errorMessage , $statusCode = 500) {
+    $response = [
+        "error" => "An error occurred while processing your request. Please try again later or contact support for assistance.",
+        "details" => $errorMessage
+    ];
+    http_response_code($statusCode);
+    header('Content-type: application/json');
+    echo json_encode($response);
+    exit; // Stop execution after sending the error message
+}
+
+
 $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
 
 $body = file_get_contents("php://input");
@@ -233,9 +245,9 @@ if($method != 'OPTIONS'){
     
     if($f == 'json' || $f == 'pjson'){//if no format was set or json was requested, issue the query and format the results as json.
     	//============== change webuser password when gis-core is accessible ==================
-    	$link = pg_connect("host=portal1-geo.sabu.mtu.edu port=5432 dbname=giscore user=webuser password=sp@ghetti") or die('cannot connect to db');
+    	$link = pg_connect("host=portal1-geo.sabu.mtu.edu port=5432 dbname=giscore user=webuser password=sp@ghetti") or handleQueryError("Authentication Error",503);;
     	//====================================================
-    	$activeResult = pg_query($link, $activeQuery) or die('query error: '.$activeQuery);
+    	$activeResult = pg_query($link, $activeQuery) or handleQueryError(" Query Error",400);
     	//$inactiveResult = pg_query($link, $inactiveQuery) or die('query error: '.$inactiveQuery);
     	
     	// build a JSON feature collection array. should think about making this a GeoJSON in future.
